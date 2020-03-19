@@ -29,17 +29,14 @@ export default {
         }
       },
       data: {
-        labels: [0, 1, 2],
+        labels: [],
         datasets: [
           {
             label: "Number of Infections",
-            data: [1, 2, 3],
+            data: [],
             backgroundColor: [
-              "rgba(54,73,93,.5)",
-              "rgba(54,73,93,.5)",
-              "rgba(54,73,93,.5)"
             ],
-            borderColor: ["#36495d", "#36495d", "#36495d"],
+            borderColor: [],
             borderWidth: 3
           }
         ]

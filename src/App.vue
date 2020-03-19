@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       currentInfections: 1,
-      currentDay: 3
+      currentDay: 0
     };
   },
   methods: {
