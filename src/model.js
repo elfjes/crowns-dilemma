@@ -1,22 +1,11 @@
-function arraySum(array) {
-  return array.reduce((a, b) => a + b, 0);
-}
-
-function arrayRoundRobin(array, newValue) {
-  if (array.length < 1) {
-    throw new RangeError("Cannot assign new value to zero length Array");
-  }
-  let rv = array.shift();
-  array.push(newValue);
-  return rv;
-}
+import modelConfig from "@/modelConfig";
+import {arrayRoundRobin, arraySum, integrate} from "@/helpers";
 
 export default class Model {
   constructor(population, initiallyInfectedPeople) {
     this.initialPopulation = population;
-    this.dailyInfectionRatio = 1;
-    this.incubationPeriod = 7;
-    this.sickPeriod = 7;
+    this.incubationPeriod = modelConfig.incubationPeriodDays.mean;
+    this.sickPeriod = modelConfig.sickPeriodDays.mean;
     this.initialize(initiallyInfectedPeople);
   }
 
@@ -39,9 +28,10 @@ export default class Model {
     this.sickPeople = new Array(this.sickPeriod).fill(0);
   }
 
-  update() {
+  update(measures) {
     this.day++;
-    this.newInfections = this.calculateNewInfections();
+    let R0 = dailyReproduction(calculateModelParameters(measures));
+    this.newInfections = this.calculateNewInfections(R0);
     this.uninfectedPeople -= Math.min(
       this.newInfections,
       this.uninfectedPeople
@@ -54,10 +44,10 @@ export default class Model {
     this.curedPeople += arrayRoundRobin(this.sickPeople, newSickPeople);
   }
 
-  calculateNewInfections() {
+  calculateNewInfections(dailyInfectionRatio) {
     return (
       this.totalSickPeople *
-      this.dailyInfectionRatio *
+      dailyInfectionRatio *
       (this.uninfectedPeople / this.population)
     );
   }
@@ -73,4 +63,49 @@ export default class Model {
       curedPeople: Math.round(this.curedPeople)
     };
   }
+}
+
+function dailyReproduction(parameters) {
+  let maxInteractionDistance = 3;
+  let modifiedInteractions = interactions(parameters.c1);
+  let modifiedInfectionChance = infectionChance(parameters.c2);
+  let maxInfectionChance = modifiedInfectionChance(parameters.minDistance);
+  return integrate(
+    x => {
+      return (
+        modifiedInteractions(x) *
+        Math.min(maxInfectionChance, modifiedInfectionChance(x))
+      );
+    },
+    0,
+    maxInteractionDistance
+  );
+}
+
+function calculateModelParameters(measures) {
+  let rv = {
+    c1: modelConfig.baseInteractionParameter,
+    c2: modelConfig.baseInfectionChanceParameter,
+    minDistance: 0
+  };
+  if (measures && measures.length > 0) {
+    measures.forEach(m => {
+      rv.c1 *= m.modC1;
+      rv.c2 *= m.modC2;
+      rv.minDistance = Math.max(rv.minDistance, m.minDistance);
+    });
+  }
+  return rv;
+}
+
+function interactions(c1) {
+  return s => {
+    return c1 * Math.exp(0.7 * s);
+  };
+}
+
+function infectionChance(c2) {
+  return s => {
+    return c2 * Math.exp(-1.5 * s);
+  };
 }
