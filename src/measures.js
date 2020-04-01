@@ -1,14 +1,26 @@
-class Measure {
-  constructor(modC1, modC2, minDistance, displayName) {
-    this.modC1 = modC1;
-    this.modC2 = modC2;
-    this.minDistance = minDistance;
-    this.displayName = displayName
+export class Measure {
+  constructor(options) {
+    let defaults = {
+      modC1: 1,
+      modC2: 1,
+      fixedModC1: null,
+      fixedModC2: null,
+      minDistance: 0,
+      displayName: "Unnamed Measure"
+    };
+    Object.assign(this, defaults, options);
   }
 }
 
 export const measures = {
-  CLOSE_SHOPS: new Measure(0.2, 1, 0, "Close all shops"),
-  MIN_DISTANCE: new Measure(1, 1, 1.5, "Advocate minimum distance"),
-  WASH_HANDS: new Measure(1, 0.7, 1.5, "Advocate washing hands regularly")
+  CLOSE_SHOPS: new Measure({ modC1: 0.5, displayName: "Close all non-vital shops" }),
+  LOCKDOWN: new Measure({ fixedModC1: 0.1, displayName: "Lockdown" }),
+  MIN_DISTANCE: new Measure({
+    minDistance: 1.5,
+    displayName: "Keep at least 1.5m distance"
+  }),
+  WASH_HANDS: new Measure({
+    modC2: 0.7,
+    displayName: "Wash hands regularly"
+  })
 };

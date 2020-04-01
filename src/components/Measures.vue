@@ -3,11 +3,7 @@
     <h2 class="title is-2">Measures</h2>
     <div class="field">
       <div v-for="(measure, index) in measures" :key="index" class="control">
-        <button
-          class="button"
-          :class="{ 'is-info': isActive[index] }"
-          @click="clicked(index)"
-        >
+        <button class="button" :class="{ 'is-info': isActive[index] }" @click="clicked(index)">
           {{ measure.displayName }}
         </button>
       </div>
@@ -35,11 +31,7 @@ export default {
   },
   methods: {
     clicked(index) {
-      this.isActive[index] = Vue.set(
-        this.isActive,
-        index,
-        !this.isActive[index]
-      );
+      this.isActive[index] = Vue.set(this.isActive, index, !this.isActive[index]);
 
       let activeMeasures = [];
       for (let i = 0; i < this.measures.length; i++) {

@@ -5,6 +5,7 @@
         <h1 class="title is-1">
           Crown's Dilemma
         </h1>
+        <cd-initial-values v-model="initialValues" :disabled="model !== null"></cd-initial-values>
         <cd-bar-chart
           v-for="chart in charts"
           :key="chart.id"
@@ -22,37 +23,35 @@
             Next 7 days
           </button>
         </div>
-        <cd-measures
-          :measures="allMeasures"
-          @input="activeMeasures = $event"
-        ></cd-measures>
+        <cd-measures :measures="allMeasures" @input="activeMeasures = $event"></cd-measures>
       </div>
-      <p>{{ activeMeasures }}</p>
     </section>
   </div>
 </template>
 
 <script>
 import BarChart from "./components/BarChart";
-import Measures from "@/components/Measures";
-import Model from "@/model";
+import Measures from "./components/Measures";
+import Model from "./model";
 import modelConfig from "@/modelConfig";
 import { measures } from "@/measures";
+import InitialValues from "./components/InitialValues";
 
 export default {
   name: "App",
   components: {
     cdBarChart: BarChart,
-    cdMeasures: Measures
+    cdMeasures: Measures,
+    cdInitialValues: InitialValues
   },
   data() {
     return {
-      currentInfections: 1,
+      initialValues: {
+        initialInfections: modelConfig.initiallyInfectedPeople,
+        initialPopulation: modelConfig.initialPopulation
+      },
       currentDay: 0,
-      model: new Model(
-        modelConfig.initialPopulation,
-        modelConfig.initiallyInfectedPeople
-      ),
+      model: null,
       charts: [
         {
           id: "infectionchart",
@@ -72,7 +71,26 @@ export default {
     };
   },
   methods: {
+    correctInitialValues() {
+      if (this.initialValues.initialPopulation < 0) {
+        this.initialValues.initialPopulation = 0;
+      }
+      if (this.initialValues.initialInfections < 0) {
+        this.initialValues.initialInfections = 0;
+      }
+      if (this.initialValues.initialInfections > this.initialValues.initialPopulation) {
+        this.initialValues.initialInfections = this.initialValues.initialPopulation;
+      }
+    },
     gotoNextDays(nDays = 1) {
+      if (this.model === null) {
+        this.correctInitialValues();
+        this.model = new Model(
+          this.initialValues.initialPopulation,
+          this.initialValues.initialInfections
+        );
+      }
+
       let states = [];
       for (let i = 0; i < nDays; i++) {
         this.model.update(this.activeMeasures);

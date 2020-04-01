@@ -1,5 +1,5 @@
 import modelConfig from "@/modelConfig";
-import {arrayRoundRobin, arraySum, integrate} from "@/helpers";
+import { arrayRoundRobin, arraySum, integrate } from "@/helpers";
 
 export default class Model {
   constructor(population, initiallyInfectedPeople) {
@@ -32,24 +32,14 @@ export default class Model {
     this.day++;
     let R0 = dailyReproduction(calculateModelParameters(measures));
     this.newInfections = this.calculateNewInfections(R0);
-    this.uninfectedPeople -= Math.min(
-      this.newInfections,
-      this.uninfectedPeople
-    );
+    this.uninfectedPeople -= Math.min(this.newInfections, this.uninfectedPeople);
 
-    let newSickPeople = arrayRoundRobin(
-      this.infectedPeople,
-      this.newInfections
-    );
+    let newSickPeople = arrayRoundRobin(this.infectedPeople, this.newInfections);
     this.curedPeople += arrayRoundRobin(this.sickPeople, newSickPeople);
   }
 
   calculateNewInfections(dailyInfectionRatio) {
-    return (
-      this.totalSickPeople *
-      dailyInfectionRatio *
-      (this.uninfectedPeople / this.population)
-    );
+    return this.totalSickPeople * dailyInfectionRatio * (this.uninfectedPeople / this.population);
   }
 
   getState() {
@@ -72,28 +62,47 @@ function dailyReproduction(parameters) {
   let maxInfectionChance = modifiedInfectionChance(parameters.minDistance);
   return integrate(
     x => {
-      return (
-        modifiedInteractions(x) *
-        Math.min(maxInfectionChance, modifiedInfectionChance(x))
-      );
+      return modifiedInteractions(x) * Math.min(maxInfectionChance, modifiedInfectionChance(x));
     },
     0,
     maxInteractionDistance
   );
 }
 
-function calculateModelParameters(measures) {
+export function calculateModelParameters(measures) {
   let rv = {
     c1: modelConfig.baseInteractionParameter,
     c2: modelConfig.baseInfectionChanceParameter,
     minDistance: 0
   };
+  let fixedModC1 = null;
+  let fixedModC2 = null;
+  let modC1 = 1;
+  let modC2 = 1;
   if (measures && measures.length > 0) {
     measures.forEach(m => {
-      rv.c1 *= m.modC1;
-      rv.c2 *= m.modC2;
+      // if any of the measures have a fixedMod defined for either C1 or C2, then the minimum value for fixedModCx
+      // is taken as the final Cx modifier. modCx values in all measures are ignored
+      if (m.fixedModC1 === null) {
+        modC1 *= m.modC1;
+      } else if (fixedModC1 === null) {
+        fixedModC1 = m.fixedModC1;
+      } else {
+        fixedModC1 = Math.min(fixedModC1, m.fixedModC1);
+      }
+
+      if (m.fixedModC2 === null) {
+        modC2 *= m.modC2;
+      } else if (fixedModC2 === null) {
+        fixedModC2 = m.fixedModC2;
+      } else {
+        fixedModC2 = Math.min(fixedModC2, m.fixedModC2);
+      }
+
       rv.minDistance = Math.max(rv.minDistance, m.minDistance);
     });
+    rv.c1 *= fixedModC1 === null ? modC1 : fixedModC1;
+    rv.c2 *= fixedModC2 === null ? modC2 : fixedModC2;
   }
   return rv;
 }
