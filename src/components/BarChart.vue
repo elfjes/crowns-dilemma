@@ -9,16 +9,16 @@ export default {
   name: "Graph",
   props: {
     id: {
-      type:String
+      type: String
     },
     title: {
       type: String
     },
     xAttribute: {
-      type:String
+      type: String
     },
     yAttribute: {
-      type:String
+      type: String
     }
   },
   data() {
@@ -64,11 +64,13 @@ export default {
         options: this.options
       });
     },
-    updateChart(payload) {
-      this.chart.data.labels.push(payload[this.xAttribute]);
-      this.chart.data.datasets[0].data.push(payload[this.yAttribute]);
-      this.chart.data.datasets[0].backgroundColor.push(this.backgroundColor);
-      this.chart.data.datasets[0].borderColor.push(this.borderColor);
+    update(...updates) {
+      updates.forEach(update => {
+        this.chart.data.labels.push(update[this.xAttribute]);
+        this.chart.data.datasets[0].data.push(update[this.yAttribute]);
+        this.chart.data.datasets[0].backgroundColor.push(this.backgroundColor);
+        this.chart.data.datasets[0].borderColor.push(this.borderColor);
+      });
       this.chart.update();
     }
   },

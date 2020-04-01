@@ -24,14 +24,7 @@ export default {
     measures: {
       type: Array,
       default() {
-        return [
-          {
-            displayName: "Bla"
-          },
-          {
-            displayName: "Blabla"
-          }
-        ];
+        return [];
       }
     }
   },
