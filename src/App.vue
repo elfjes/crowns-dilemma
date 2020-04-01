@@ -1,48 +1,53 @@
 <template>
   <div id="app">
     <section class="section">
-      <div class="container">
-        <h1 class="title is-1">
-          Crown's Dilemma
-        </h1>
-        <cd-initial-values v-model="initialValues" :disabled="model !== null"></cd-initial-values>
-        <cd-bar-chart
-          v-for="chart in charts"
-          :key="chart.id"
-          ref="charts"
-          :id="chart.id"
-          :title="chart.title"
-          :x-attribute="chart.xAttribute"
-          :y-attribute="chart.yAttribute"
-        ></cd-bar-chart>
-        <div class="buttons">
-          <button class="button is-primary" @click="gotoNextDays()">
-            Next day
-          </button>
-          <button class="button is-primary" @click="gotoNextDays(7)">
-            Next 7 days
-          </button>
+      <h1 class="title is-3">
+        Crown's Dilemma
+      </h1>
+      <cd-initial-values
+        class="column is-4-desktop is-8-tablet"
+        v-model="initialValues" 
+        :disabled="model !== null"
+      ></cd-initial-values>
+      <div class="columns">
+        <div class="column is-8">
+          <div class="box">
+            <cd-charts ref="charts"></cd-charts>
+          </div>
         </div>
-        <cd-measures :measures="allMeasures" @input="activeMeasures = $event"></cd-measures>
+        <div class="column is-4 is-multiline">
+          <cd-statistics ref="statistics"></cd-statistics>
+          <cd-measures :measures="allMeasures" @input="activeMeasures = $event"></cd-measures>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="button is-primary" @click="gotoNextDays()">
+          Next day
+        </button>
+        <button class="button is-primary" @click="gotoNextDays(7)">
+          Next 7 days
+        </button>
       </div>
     </section>
   </div>
 </template>
 
 <script>
-import BarChart from "./components/BarChart";
 import Measures from "./components/Measures";
 import Model from "./model";
-import modelConfig from "@/modelConfig";
-import { measures } from "@/measures";
+import modelConfig from "./modelConfig";
+import { measures } from "./measures";
 import InitialValues from "./components/InitialValues";
+import Charts from "./components/Charts";
+import Statistics from "./components/Statistics";
 
 export default {
   name: "App",
   components: {
-    cdBarChart: BarChart,
+    cdCharts: Charts,
     cdMeasures: Measures,
-    cdInitialValues: InitialValues
+    cdInitialValues: InitialValues,
+    cdStatistics: Statistics
   },
   data() {
     return {
@@ -97,9 +102,8 @@ export default {
         states.push(this.model.getState());
       }
 
-      this.$refs.charts.forEach(chart => {
-        chart.update(...states);
-      });
+      this.$refs.charts.update(...states);
+      this.$refs.statistics.update(...states);
     }
   }
 };

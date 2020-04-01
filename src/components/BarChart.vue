@@ -56,8 +56,8 @@ export default {
     };
   },
   methods: {
-    createChart(chartId) {
-      const ctx = document.getElementById(chartId);
+    createChart() {
+      const ctx = document.getElementById(this.id);
       this.chart = new Chart(ctx, {
         type: this.type,
         data: this.data,
@@ -75,7 +75,7 @@ export default {
     }
   },
   mounted() {
-    this.createChart(this.id);
+    this.createChart();
   }
 };
 </script>
