@@ -1,16 +1,16 @@
 <template>
   <div class="box">
-      <h2 class="title is-4">Statistics</h2>
-      <template v-for="prop in properties">
-          <div class="columns is-desktop" :key="prop.ref">
-              <div class="column">
-                  <p class="has-text-weight-bold">{{ prop.displayName }}:</p>
-              </div>
-              <div class="column">
-                  <p>{{ getState(prop.ref) }}</p>
-              </div>
-          </div>
-      </template>
+    <h2 class="title is-4">Statistics</h2>
+    <template v-for="prop in properties">
+      <div class="columns is-desktop" :key="prop.ref">
+        <div class="column">
+          <p class="has-text-weight-bold">{{ prop.displayName }}:</p>
+        </div>
+        <div class="column">
+          <p>{{ getState(prop.ref) }}</p>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 

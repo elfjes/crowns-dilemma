@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div >
+  </div>
 </template>
 
 <script>
@@ -30,8 +30,7 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-
+  }
 };
 </script>
 

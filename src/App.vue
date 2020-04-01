@@ -6,7 +6,7 @@
       </h1>
       <cd-initial-values
         class="column is-4-desktop is-8-tablet"
-        v-model="initialValues" 
+        v-model="initialValues"
         :disabled="model !== null"
       ></cd-initial-values>
       <div class="columns">
