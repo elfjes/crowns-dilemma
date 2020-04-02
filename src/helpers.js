@@ -11,8 +11,7 @@ export function arrayRoundRobin(array, newValue) {
   return rv;
 }
 
-export function integrate(func, start, stop) {
-  let steps = 50;
+export function integrate(func, start, stop, steps = 50) {
   let dx = (stop - start) / steps;
   let x;
   let integral = 0;
