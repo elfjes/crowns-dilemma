@@ -11,26 +11,28 @@
         {{ chart.title }}
       </button>
     </div>
-    <cd-bar-chart
+    <component
       v-for="chart in charts"
       v-show="chart.id === activeChart"
+      :is="chart.component"
       :key="chart.id"
       ref="charts"
       :id="chart.id"
       :title="chart.title"
-      :x-attribute="chart.xAttribute"
-      :y-attribute="chart.yAttribute"
-    ></cd-bar-chart>
+      :config="chart.config"
+    ></component>
   </div>
 </template>
 
 <script>
 import BarChart from "./BarChart";
+import TotalDistributionChart from "./TotalDistributionChart";
 
 export default {
   name: "Charts",
   components: {
-    cdBarChart: BarChart
+    cdBarChart: BarChart,
+    cdTotalDistributionChart: TotalDistributionChart
   },
   data() {
     return {
@@ -38,19 +40,23 @@ export default {
         {
           id: "infectionchart",
           title: "New Infections",
-          xAttribute: "day",
-          yAttribute: "newInfections"
+          component: "cdBarChart",
+          config: {
+            xAttribute: "day",
+            yAttribute: "newInfections"
+          }
         },
         {
           id: "sickpeoplechart",
           title: "Total Sick People",
-          xAttribute: "day",
-          yAttribute: "sickPeople"
+          component: "cdTotalDistributionChart",
+          config: undefined
         }
       ],
       activeChart: "infectionchart"
     };
   },
+
   methods: {
     activate(idx) {
       this.activeChart = idx;
@@ -58,6 +64,11 @@ export default {
     update(...states) {
       this.$refs.charts.forEach(chart => {
         chart.update(...states);
+      });
+    },
+    reset() {
+      this.$refs.charts.forEach(chart => {
+        chart.reset();
       });
     }
   }

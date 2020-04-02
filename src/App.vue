@@ -17,7 +17,7 @@
         </div>
         <div class="column is-4 is-multiline">
           <cd-statistics ref="statistics"></cd-statistics>
-          <cd-measures :measures="allMeasures" @input="activeMeasures = $event"></cd-measures>
+          <cd-measures :measures="allMeasures" v-model="activeMeasures"></cd-measures>
         </div>
       </div>
       <div class="buttons">
@@ -26,6 +26,9 @@
         </button>
         <button class="button is-primary" @click="gotoNextDays(7)">
           Next 7 days
+        </button>
+        <button class="button is-danger" @click="reset">
+          Restart simulation
         </button>
       </div>
     </section>
@@ -55,7 +58,6 @@ export default {
         initialInfections: modelConfig.initiallyInfectedPeople,
         initialPopulation: modelConfig.initialPopulation
       },
-      currentDay: 0,
       model: null,
       charts: [
         {
@@ -71,7 +73,7 @@ export default {
           yAttribute: "sickPeople"
         }
       ],
-      allMeasures: Object.values(measures),
+      allMeasures: measures,
       activeMeasures: []
     };
   },
@@ -104,6 +106,12 @@ export default {
 
       this.$refs.charts.update(...states);
       this.$refs.statistics.update(...states);
+    },
+    reset() {
+      this.model = null;
+      this.activeMeasures = [];
+      this.$refs.charts.reset();
+      this.$refs.statistics.reset();
     }
   }
 };

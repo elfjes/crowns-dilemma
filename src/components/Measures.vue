@@ -2,11 +2,11 @@
   <div class="box">
     <h2 class="title is-4">Measures</h2>
     <div class="field">
-      <div v-for="(measure, index) in measures" :key="index" class="control">
+      <div v-for="measure in measures" :key="measure.id" class="control">
         <button
           class="button is-small"
-          :class="{ 'is-info': isActive[index] }"
-          @click="clicked(index)"
+          :class="{ 'is-info': measureMap[measure.id].active }"
+          @click="clicked(measure.id)"
         >
           {{ measure.displayName }}
         </button>
@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import Vue from "vue";
-
 export default {
   name: "Measures.vue",
   props: {
@@ -26,24 +24,46 @@ export default {
       default() {
         return [];
       }
+    },
+    value: {
+      type: Array
     }
   },
   data() {
     return {
-      isActive: new Array(this.measures.length).fill(false)
+      measureMap: this.getMeasureMap()
     };
   },
   methods: {
-    clicked(index) {
-      this.isActive[index] = Vue.set(this.isActive, index, !this.isActive[index]);
+    getMeasureMap() {
+      let rv = {};
+      this.measures.forEach(measure => {
+        rv[measure.id] = {
+          active: false,
+          measure
+        };
+      });
+      return rv;
+    },
+    clicked(id) {
+      this.measureMap[id].active = !this.measureMap[id].active;
 
       let activeMeasures = [];
-      for (let i = 0; i < this.measures.length; i++) {
-        if (this.isActive[i]) {
-          activeMeasures.push(this.measures[i]);
+      Object.values(this.measureMap).forEach(item => {
+        if (item.active) {
+          activeMeasures.push(item.measure);
         }
-      }
+      });
+
       this.$emit("input", activeMeasures);
+    }
+  },
+  watch: {
+    value(activeMeasures) {
+      this.measureMap = this.getMeasureMap();
+      activeMeasures.forEach(measure => {
+        this.measureMap[measure.id].active = true;
+      });
     }
   }
 };

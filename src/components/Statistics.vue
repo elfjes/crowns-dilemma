@@ -54,6 +54,9 @@ export default {
     },
     update(...states) {
       this.state = states[states.length - 1];
+    },
+    reset() {
+      this.state = {};
     }
   }
 };
