@@ -48,7 +48,7 @@ export default {
         },
         {
           id: "sickpeoplechart",
-          title: "Total Sick People",
+          title: "Total Distribution",
           component: "cdTotalDistributionChart",
           config: undefined
         }

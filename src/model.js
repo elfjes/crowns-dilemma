@@ -116,7 +116,7 @@ function interactions(c1) {
 }
 
 function infectionChance(c2) {
-  let alpha = modelConfig.baseInfectionChanceParameterr;
+  let alpha = modelConfig.baseInfectionChanceParameter;
 
   return s => {
     return c2 * alpha * Math.exp(-1.5 * s);

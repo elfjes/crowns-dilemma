@@ -1,35 +1,40 @@
 <template>
   <div id="app">
     <section class="section">
-      <h1 class="title is-3">
+      <h1 class="title is-4 is-3-mobile">
         Crown's Dilemma
       </h1>
-      <cd-initial-values
-        class="column is-4-desktop is-8-tablet"
-        v-model="initialValues"
-        :disabled="model !== null"
-      ></cd-initial-values>
       <div class="columns">
         <div class="column is-8">
           <div class="box">
             <cd-charts ref="charts"></cd-charts>
           </div>
+          <div class="buttons">
+            <button class="button is-primary" @click="gotoNextDays()">
+              Next day
+            </button>
+            <button class="button is-primary" @click="gotoNextDays(7)">
+              Next 7 days
+            </button>
+            <button class="button is-danger" @click="reset">
+              Restart simulation
+            </button>
+          </div>
         </div>
-        <div class="column is-4 is-multiline">
-          <cd-statistics ref="statistics"></cd-statistics>
+        <div class="column is-4">
+          <cd-card title="Initial Values" start-collapsed>
+            <cd-initial-values
+              v-model="initialValues"
+              :disabled="model !== null"
+            ></cd-initial-values>
+          </cd-card>
+
+          <cd-card title="Statistics">
+            <cd-statistics ref="statistics"></cd-statistics>
+          </cd-card>
+
           <cd-measures :measures="allMeasures" v-model="activeMeasures"></cd-measures>
         </div>
-      </div>
-      <div class="buttons">
-        <button class="button is-primary" @click="gotoNextDays()">
-          Next day
-        </button>
-        <button class="button is-primary" @click="gotoNextDays(7)">
-          Next 7 days
-        </button>
-        <button class="button is-danger" @click="reset">
-          Restart simulation
-        </button>
       </div>
     </section>
   </div>
@@ -43,6 +48,7 @@ import { measures } from "./measures";
 import InitialValues from "./components/InitialValues";
 import Charts from "./components/Charts";
 import Statistics from "./components/Statistics";
+import Card from "./components/Card";
 
 export default {
   name: "App",
@@ -50,7 +56,8 @@ export default {
     cdCharts: Charts,
     cdMeasures: Measures,
     cdInitialValues: InitialValues,
-    cdStatistics: Statistics
+    cdStatistics: Statistics,
+    cdCard: Card
   },
   data() {
     return {
@@ -59,20 +66,6 @@ export default {
         initialPopulation: modelConfig.initialPopulation
       },
       model: null,
-      charts: [
-        {
-          id: "infectionchart",
-          title: "New Infections",
-          xAttribute: "day",
-          yAttribute: "newInfections"
-        },
-        {
-          id: "sickpeoplechart",
-          title: "Total Sick People",
-          xAttribute: "day",
-          yAttribute: "sickPeople"
-        }
-      ],
       allMeasures: measures,
       activeMeasures: []
     };

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2 class="title is-4">Initial Values</h2>
     <div v-for="field in Object.keys(value)" class="field is-horizontal" :key="field">
       <div class="field-label is-normal">
         <label class="label">{{ field }}</label>

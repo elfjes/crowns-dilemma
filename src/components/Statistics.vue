@@ -1,6 +1,5 @@
 <template>
-  <div class="box">
-    <h2 class="title is-4">Statistics</h2>
+  <div>
     <template v-for="prop in properties">
       <div class="columns is-desktop" :key="prop.ref">
         <div class="column">

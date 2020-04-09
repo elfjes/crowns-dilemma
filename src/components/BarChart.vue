@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>Hey there</p>
     <canvas :id="id"></canvas>
   </div>
 
