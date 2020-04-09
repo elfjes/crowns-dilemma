@@ -7,6 +7,7 @@ export default class Model {
     this.incubationPeriod = modelConfig.incubationPeriodDays.mean;
     this.sickPeriod = modelConfig.sickPeriodDays.mean;
     this.initialize(initiallyInfectedPeople);
+    this.partiallyInfected = 0;
   }
 
   get totalInfectedPeople() {
@@ -39,18 +40,23 @@ export default class Model {
   }
 
   calculateNewInfections(dailyInfectionRatio) {
-    return this.totalSickPeople * dailyInfectionRatio * (this.uninfectedPeople / this.population);
+    let rawInfections =
+      this.totalSickPeople * dailyInfectionRatio * (this.uninfectedPeople / this.population) +
+      this.partiallyInfected;
+    let rv = Math.floor(rawInfections);
+    this.partiallyInfected = rawInfections - rv;
+    return rv;
   }
 
   getState() {
     return {
       day: this.day,
-      population: Math.round(this.population),
-      newInfections: Math.round(this.newInfections),
-      infectedPeople: Math.round(this.totalInfectedPeople),
-      sickPeople: Math.round(this.totalSickPeople),
-      uninfectedPeople: Math.round(this.uninfectedPeople),
-      curedPeople: Math.round(this.curedPeople)
+      population: this.population,
+      newInfections: this.newInfections,
+      infectedPeople: this.totalInfectedPeople,
+      sickPeople: this.totalSickPeople,
+      uninfectedPeople: this.uninfectedPeople,
+      curedPeople: this.curedPeople
     };
   }
 }
