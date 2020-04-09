@@ -182,7 +182,7 @@ Combining the first and second assumption gives us
   \frac{e^{-\beta_2 \cdot 0}}{e^{-\beta_2 \cdot 3}} = 100 \\
   \frac{1}{e^{-\beta_2 \cdot 3}} = 100 \\
   e^{-\beta_2 \cdot 3} = \frac{1}{100} \\
-  \beta_2 = -\frac{1}{3}\ \cdot ln{ \frac{1}{100} } \approx -1.5
+  \beta_2 = -\frac{1}{3}\ \cdot \ln{ \frac{1}{100} } \approx -1.5
 
 The third assumption gives us the value for :math:`\alpha_2`:
 
@@ -197,3 +197,48 @@ The final curve for the infection probability becomes
 
 .. math::
   P(s) = 0.088 \cdot e^{-1.5 \cdot s} \; \text{with} \; 0 \leq s \leq 3
+
+##################################################
+Different measures
+##################################################
+
+During the simulation, a number of different measures can be taken that modify the infection rate. These measures
+usually affect either :math:`I(s)` or :math:`P(s)`.
+
+##################################################
+Measures that reduce the curve by a certain factor
+##################################################
+
+Most measures either reduce the magnitude/amplitude of either the Interaction or Probability curve by a certain
+factor:
+
+.. math::
+  I'(s) = c_1 \cdot I(s) \\
+  P'(s) = c_2 \cdot P(s) \\
+
+Some of these measures are compounded, and some set :math:`c_i` to a specific (low) value (so called `fixed value`
+measures). If at least one `fixed value` measure has been activated (ie. taken), the lowest value is chosen as the
+final value for :math:`c_i`
+
+.. math::
+  c_i = \text{min}((\prod_{m=0}^{M} c_{i,m}), c_{i,fixed,0} ,c_{i,fixed,1} \ldots c_{i,fixed,M})
+
+.. list-table::
+
+  * - :math:`i`
+    - Index for the specific curve, either :math:`1` or :math:`2`
+  * - :math:`M`
+    - Number of active measures
+
+##################################################
+Measures that set a minimum interaction distance
+##################################################
+
+Some measures increase the minimum distance over which people have social interactions :math:`s`.
+This requires some additional explanation. A common measure that can be taken is to keep a minimum
+distance between people, say :math:`s_{min)=1.5 \text{m}`. This does not reduce the total
+number of interactions but rather changes the curve for :math:`I(s)` so that all interactions that would have
+taken place at :math:`s<s_{min}`, now take place at :math:`s_{min}`. This radically changes the shape
+of the Interaction-curve, which make a mathematical implementation complex(er). The same result can
+however be achieved in a much simpler way by saying that every interaction at :math:`s < s_{min}` has an infection
+chance :math:`P(s)=P(s_{min})` or that :math:`P'(s) = \text{min}(P(s), P(s_{min}))`

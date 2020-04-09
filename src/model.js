@@ -71,8 +71,8 @@ function dailyReproduction(parameters) {
 
 export function calculateModelParameters(measures) {
   let rv = {
-    c1: modelConfig.baseInteractionParameter,
-    c2: modelConfig.baseInfectionChanceParameter,
+    c1: 1,
+    c2: 1,
     minDistance: 0
   };
   let fixedModC1 = null;
@@ -101,20 +101,24 @@ export function calculateModelParameters(measures) {
 
       rv.minDistance = Math.max(rv.minDistance, m.minDistance);
     });
-    rv.c1 *= fixedModC1 === null ? modC1 : fixedModC1;
-    rv.c2 *= fixedModC2 === null ? modC2 : fixedModC2;
+    rv.c1 = fixedModC1 === null ? modC1 : Math.min(modC1, fixedModC1);
+    rv.c2 = fixedModC2 === null ? modC2 : Math.min(modC2, fixedModC2);
   }
   return rv;
 }
 
 function interactions(c1) {
+  let alpha = modelConfig.baseInteractionParameter;
+
   return s => {
-    return c1 * Math.exp(0.7 * s);
+    return c1 * alpha * Math.exp(0.7 * s);
   };
 }
 
 function infectionChance(c2) {
+  let alpha = modelConfig.baseInfectionChanceParameterr;
+
   return s => {
-    return c2 * Math.exp(-1.5 * s);
+    return c2 * alpha * Math.exp(-1.5 * s);
   };
 }
