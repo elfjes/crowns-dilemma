@@ -37,6 +37,7 @@
         </div>
       </div>
     </section>
+    <cd-footer></cd-footer>
   </div>
 </template>
 
@@ -49,6 +50,7 @@ import InitialValues from "./components/InitialValues";
 import Charts from "./components/Charts";
 import Statistics from "./components/Statistics";
 import Card from "./components/Card";
+import Footer from "./components/Footer";
 
 export default {
   name: "App",
@@ -57,7 +59,8 @@ export default {
     cdMeasures: Measures,
     cdInitialValues: InitialValues,
     cdStatistics: Statistics,
-    cdCard: Card
+    cdCard: Card,
+    cdFooter: Footer
   },
   data() {
     return {
