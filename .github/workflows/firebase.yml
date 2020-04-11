@@ -28,7 +28,7 @@ jobs:
         # Build and test the project, then
         # deploy to Azure Web App.
         npm install
-        npm test:unit
-        npm build
+        npm run test:unit
+        npm run build
     - name: 'Deploy to Firebase'
       run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
