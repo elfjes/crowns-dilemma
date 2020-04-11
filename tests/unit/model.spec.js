@@ -13,6 +13,8 @@ describe("calculateModelParameters", () => {
     [[{ c1: 0.5, c2: 0.25, minDistance: 1 }], { c1: 0.5, c2: 0.25, minDistance: 1 }],
     [[{ c1: 0.5 }, { c1: 0.5 }], { c1: 0.25 }],
     [[{ c1: 0.5 }, { fixedC1: 0.3 }], { c1: 0.3 }],
+    [[{ fixedC1: 0.5 }, { fixedC1: 0.3 }], { c1: 0.3 }],
+    [[{ fixedC2: 0.5 }, { fixedC2: 0.3 }], { c2: 0.3 }],
     [[{ c2: 0.5 }, { fixedC2: 0.3 }], { c2: 0.3 }]
   ];
   test.each(cases)(

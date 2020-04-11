@@ -23,10 +23,7 @@
         </div>
         <div class="column is-4">
           <cd-card title="Initial Values" start-collapsed>
-            <cd-initial-values
-              v-model="initialValues"
-              :disabled="model !== null"
-            ></cd-initial-values>
+            <cd-multi-field v-model="initialValues" :disabled="model !== null"></cd-multi-field>
           </cd-card>
 
           <cd-card title="Statistics">
@@ -46,7 +43,7 @@ import Measures from "./components/Measures";
 import InfectionModel from "./model";
 import modelConfig from "./modelConfig";
 import { measures } from "./measures";
-import InitialValues from "./components/InitialValues";
+import MultiField from "./components/MultiField";
 import Charts from "./components/Charts";
 import Statistics from "./components/Statistics";
 import Card from "./components/Card";
@@ -57,7 +54,7 @@ export default {
   components: {
     cdCharts: Charts,
     cdMeasures: Measures,
-    cdInitialValues: InitialValues,
+    cdMultiField: MultiField,
     cdStatistics: Statistics,
     cdCard: Card,
     cdFooter: Footer
@@ -65,8 +62,16 @@ export default {
   data() {
     return {
       initialValues: {
-        initialInfections: modelConfig.initiallyInfectedPeople,
-        initialPopulation: modelConfig.initialPopulation
+        initialInfections: {
+          value: modelConfig.initiallyInfectedPeople,
+          type: "integer",
+          minVal: 0
+        },
+        initialPopulation: {
+          value: modelConfig.initialPopulation,
+          type: "integer",
+          minVal: 0
+        }
       },
       model: null,
       allMeasures: measures,
@@ -75,35 +80,16 @@ export default {
   },
   methods: {
     correctInitialValues() {
-      this.initialValues.initialPopulation = this.convertToNumber(
-        this.initialValues.initialPopulation,
-        0
-      );
-      this.initialValues.initialInfections = this.convertToNumber(
-        this.initialValues.initialInfections,
-        0
-      );
-      if (this.initialValues.initialPopulation < 0) {
-        this.initialValues.initialPopulation = 0;
+      if (this.initialValues.initialInfections.value > this.initialValues.initialPopulation.value) {
+        this.initialValues.initialInfections.value = this.initialValues.initialPopulation.value;
       }
-      if (this.initialValues.initialInfections < 0) {
-        this.initialValues.initialInfections = 0;
-      }
-      if (this.initialValues.initialInfections > this.initialValues.initialPopulation) {
-        this.initialValues.initialInfections = this.initialValues.initialPopulation;
-      }
-    },
-    convertToNumber(value, fallback = 0) {
-      let rv = parseFloat(value);
-      if (isFinite(rv)) return rv;
-      return fallback;
     },
     gotoNextDays(nDays = 1) {
       if (this.model === null) {
         this.correctInitialValues();
         this.model = new InfectionModel(
-          this.initialValues.initialPopulation,
-          this.initialValues.initialInfections
+          this.initialValues.initialPopulation.value,
+          this.initialValues.initialInfections.value
         );
       }
 
