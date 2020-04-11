@@ -1,0 +1,34 @@
+# This workflow will build and push a node.js application to a Firebase App when a release is created.
+#
+# To configure this workflow:
+#
+# 1. Set up a secret in your repository named FIREBASE_TOKEN with the value of your Azure publish profile.
+
+on:
+  release:
+    types: [created]
+
+env:
+  NODE_VERSION: '13.x'                # set this to the node version to use
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: install firebase cli
+      run: npm install -g firebase-tools
+    - name: npm install, test and build
+      run: |
+        # Build and test the project, then
+        # deploy to Azure Web App.
+        npm install
+        npm test:unit
+        npm build
+    - name: 'Deploy to Firebase'
+      run: firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
