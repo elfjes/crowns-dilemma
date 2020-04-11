@@ -1,16 +1,3 @@
-export function arraySum(array) {
-  return array.reduce((a, b) => a + b, 0);
-}
-
-export function arrayRoundRobin(array, newValue) {
-  if (array.length < 1) {
-    throw new RangeError("Cannot assign new value to zero length Array");
-  }
-  let rv = array.shift();
-  array.push(newValue);
-  return rv;
-}
-
 export function integrate(func, start, stop, steps = 50) {
   let dx = (stop - start) / steps;
   let x;
@@ -24,10 +11,30 @@ export function integrate(func, start, stop, steps = 50) {
 }
 
 export class Buckets {
-  constructor(size) {
-    if (size < 1) {
-      throw new RangeError("Buckets size must be at least 1");
+  constructor(length) {
+    if (length < 1) {
+      throw new RangeError("Buckets length must be at least 1");
     }
-    this.contents = new Array(size).fill(0);
+    this.length = length;
+    this.contents = new Array(length).fill(0);
+  }
+  getItem(index) {
+    if (index > self.length) {
+      throw new RangeError("Index out of range");
+    }
+    return this.contents[index];
+  }
+  setItem(index, value) {
+    if (index > self.length) {
+      throw new RangeError("Index out of range");
+    }
+    this.contents[index] = value;
+  }
+  rotate(newValue) {
+    this.contents.push(newValue);
+    return this.contents.shift();
+  }
+  get total() {
+    return this.contents.reduce((a, b) => a + b, 0);
   }
 }

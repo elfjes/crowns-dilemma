@@ -43,7 +43,7 @@
 
 <script>
 import Measures from "./components/Measures";
-import Model from "./model";
+import InfectionModel from "./model";
 import modelConfig from "./modelConfig";
 import { measures } from "./measures";
 import InitialValues from "./components/InitialValues";
@@ -101,7 +101,7 @@ export default {
     gotoNextDays(nDays = 1) {
       if (this.model === null) {
         this.correctInitialValues();
-        this.model = new Model(
+        this.model = new InfectionModel(
           this.initialValues.initialPopulation,
           this.initialValues.initialInfections
         );

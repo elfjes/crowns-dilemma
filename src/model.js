@@ -1,7 +1,7 @@
 import modelConfig from "@/modelConfig";
-import { arrayRoundRobin, arraySum, integrate } from "@/helpers";
+import { Buckets, integrate } from "./helpers";
 
-export default class Model {
+export default class InfectionModel {
   constructor(population, initiallyInfectedPeople) {
     this.initialPopulation = population;
     this.incubationPeriod = modelConfig.incubationPeriodDays.mean;
@@ -10,23 +10,15 @@ export default class Model {
     this.partiallyInfected = 0;
   }
 
-  get totalInfectedPeople() {
-    return arraySum(this.infectedPeople);
-  }
-
-  get totalSickPeople() {
-    return arraySum(this.sickPeople);
-  }
-
   initialize(initiallyInfectedPeople) {
     this.day = 0;
     this.population = this.initialPopulation;
     this.uninfectedPeople = this.initialPopulation - initiallyInfectedPeople;
     this.curedPeople = 0;
     this.newInfections = 0;
-    this.infectedPeople = new Array(this.incubationPeriod).fill(0);
-    arrayRoundRobin(this.infectedPeople, initiallyInfectedPeople);
-    this.sickPeople = new Array(this.sickPeriod).fill(0);
+    this.infectedPeople = new Buckets(this.incubationPeriod);
+    this.infectedPeople.rotate(initiallyInfectedPeople);
+    this.sickPeople = new Buckets(this.sickPeriod);
   }
 
   update(measures) {
@@ -35,13 +27,13 @@ export default class Model {
     this.newInfections = this.calculateNewInfections(R0);
     this.uninfectedPeople -= Math.min(this.newInfections, this.uninfectedPeople);
 
-    let newSickPeople = arrayRoundRobin(this.infectedPeople, this.newInfections);
-    this.curedPeople += arrayRoundRobin(this.sickPeople, newSickPeople);
+    let newSickPeople = this.infectedPeople.rotate(this.newInfections);
+    this.curedPeople += this.sickPeople.rotate(newSickPeople);
   }
 
   calculateNewInfections(dailyInfectionRatio) {
     let rawInfections =
-      this.totalSickPeople * dailyInfectionRatio * (this.uninfectedPeople / this.population) +
+      this.sickPeople.total * dailyInfectionRatio * (this.uninfectedPeople / this.population) +
       this.partiallyInfected;
     let rv = Math.floor(rawInfections);
     this.partiallyInfected = rawInfections - rv;
@@ -53,8 +45,8 @@ export default class Model {
       day: this.day,
       population: this.population,
       newInfections: this.newInfections,
-      infectedPeople: this.totalInfectedPeople,
-      sickPeople: this.totalSickPeople,
+      infectedPeople: this.infectedPeople.total,
+      sickPeople: this.sickPeople.total,
       uninfectedPeople: this.uninfectedPeople,
       curedPeople: this.curedPeople
     };
