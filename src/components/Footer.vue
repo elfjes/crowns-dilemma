@@ -2,10 +2,10 @@
   <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        <strong>Crown's Dilemma</strong> by Pelle Koster. The
+        <strong>Crown's Dilemma</strong> (v{{ version }}) by Pelle Koster. The
         <a href="https://github.com/elfjes/crowns-dilemma">source code</a> is licensed
         <a href="https://opensource.org/licenses/mit-license.php">MIT</a>. &nbsp;&bull;
-        <a href="https://crowns-dilemma.readthedocs.io/">Documentation</a>
+        <a href="https://crowns-dilemma.readthedocs.io/">Documentation</a> &nbsp;&bull;
       </p>
     </div>
   </footer>
@@ -13,7 +13,12 @@
 
 <script>
 export default {
-  name: "Footer"
+  name: "Footer",
+  computed: {
+    version() {
+      return process.env.VUE_APP_VERSION;
+    }
+  }
 };
 </script>
 

@@ -75,6 +75,14 @@ export default {
   },
   methods: {
     correctInitialValues() {
+      this.initialValues.initialPopulation = this.convertToNumber(
+        this.initialValues.initialPopulation,
+        0
+      );
+      this.initialValues.initialInfections = this.convertToNumber(
+        this.initialValues.initialInfections,
+        0
+      );
       if (this.initialValues.initialPopulation < 0) {
         this.initialValues.initialPopulation = 0;
       }
@@ -84,6 +92,11 @@ export default {
       if (this.initialValues.initialInfections > this.initialValues.initialPopulation) {
         this.initialValues.initialInfections = this.initialValues.initialPopulation;
       }
+    },
+    convertToNumber(value, fallback = 0) {
+      let rv = parseFloat(value);
+      if (isFinite(rv)) return rv;
+      return fallback;
     },
     gotoNextDays(nDays = 1) {
       if (this.model === null) {
