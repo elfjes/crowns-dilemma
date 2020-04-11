@@ -1,3 +1,5 @@
+process.env.VUE_APP_VERSION = require("./package.json").version;
+
 module.exports = {
   // Setting this to false can speed up production builds if you don't need source maps for production.
   productionSourceMap: false,
