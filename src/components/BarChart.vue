@@ -2,7 +2,6 @@
   <div>
     <canvas :id="id"></canvas>
   </div>
-
 </template>
 
 <script>
