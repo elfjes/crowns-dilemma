@@ -19,13 +19,13 @@ export class Buckets {
     this.contents = new Array(length).fill(0);
   }
   getItem(index) {
-    if (index > self.length) {
+    if (index > this.length) {
       throw new RangeError("Index out of range");
     }
     return this.contents[index];
   }
   setItem(index, value) {
-    if (index > self.length) {
+    if (index > this.length) {
       throw new RangeError("Index out of range");
     }
     this.contents[index] = value;
