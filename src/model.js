@@ -75,34 +75,34 @@ export function calculateModelParameters(measures) {
     c2: 1,
     minDistance: 0
   };
-  let fixedModC1 = null;
-  let fixedModC2 = null;
-  let modC1 = 1;
-  let modC2 = 1;
+  let fixedC1 = null;
+  let fixedC2 = null;
+  let c1 = 1;
+  let c2 = 1;
   if (measures && measures.length > 0) {
     measures.forEach(m => {
       // if any of the measures have a fixedMod defined for either C1 or C2, then the minimum value for fixedModCx
       // is taken as the final Cx modifier. modCx values in all measures are ignored
-      if (m.fixedModC1 === null) {
-        modC1 *= m.modC1;
-      } else if (fixedModC1 === null) {
-        fixedModC1 = m.fixedModC1;
+      if (m.fixedC1 === null) {
+        c1 *= m.c1;
+      } else if (fixedC1 === null) {
+        fixedC1 = m.fixedC1;
       } else {
-        fixedModC1 = Math.min(fixedModC1, m.fixedModC1);
+        fixedC1 = Math.min(fixedC1, m.fixedC1);
       }
 
-      if (m.fixedModC2 === null) {
-        modC2 *= m.modC2;
-      } else if (fixedModC2 === null) {
-        fixedModC2 = m.fixedModC2;
+      if (m.fixedC2 === null) {
+        c2 *= m.c2;
+      } else if (fixedC2 === null) {
+        fixedC2 = m.fixedC2;
       } else {
-        fixedModC2 = Math.min(fixedModC2, m.fixedModC2);
+        fixedC2 = Math.min(fixedC2, m.fixedC2);
       }
 
       rv.minDistance = Math.max(rv.minDistance, m.minDistance);
     });
-    rv.c1 = fixedModC1 === null ? modC1 : Math.min(modC1, fixedModC1);
-    rv.c2 = fixedModC2 === null ? modC2 : Math.min(modC2, fixedModC2);
+    rv.c1 = fixedC1 === null ? c1 : Math.min(c1, fixedC1);
+    rv.c2 = fixedC2 === null ? c2 : Math.min(c2, fixedC2);
   }
   return rv;
 }

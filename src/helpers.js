@@ -22,3 +22,12 @@ export function integrate(func, start, stop, steps = 50) {
   }
   return integral;
 }
+
+export class Buckets {
+  constructor(size) {
+    if (size < 1) {
+      throw new RangeError("Buckets size must be at least 1");
+    }
+    this.contents = new Array(size).fill(0);
+  }
+}
