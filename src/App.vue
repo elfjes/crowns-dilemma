@@ -23,7 +23,7 @@
         </div>
         <div class="column is-4">
           <cd-card title="Initial Values" start-collapsed>
-            <cd-multi-field v-model="initialValues" :disabled="model !== null"></cd-multi-field>
+            <cd-multi-field v-model="initialValues" :disabled="models !== null"></cd-multi-field>
           </cd-card>
 
           <cd-card title="Statistics">
@@ -40,15 +40,17 @@
 
 <script>
 import Measures from "./components/Measures";
-import InfectionModel from "./model";
-import modelConfig from "./modelConfig";
+import InfectionModel from "./models/infectionModel";
+import modelParameters from "./modelParameters";
 import { measures } from "./measures";
 import MultiField from "./components/MultiField";
 import Charts from "./components/Charts";
 import Statistics from "./components/Statistics";
 import Card from "./components/Card";
 import Footer from "./components/Footer";
+import sicknessModel from "./models/sicknessModel";
 
+const modelTypes = [InfectionModel, sicknessModel];
 export default {
   name: "App",
   components: {
@@ -63,47 +65,73 @@ export default {
     return {
       initialValues: {
         initialInfections: {
-          value: modelConfig.initiallyInfectedPeople,
+          value: modelParameters.initiallyInfectedPeople,
           type: "integer",
           minVal: 0
         },
         initialPopulation: {
-          value: modelConfig.initialPopulation,
+          value: modelParameters.initialPopulation,
           type: "integer",
           minVal: 0
         }
       },
-      model: null,
+      models: null,
       allMeasures: measures,
-      activeMeasures: []
+      activeMeasures: [],
+      modelState: {}
     };
   },
+
   methods: {
     correctInitialValues() {
       if (this.initialValues.initialInfections.value > this.initialValues.initialPopulation.value) {
         this.initialValues.initialInfections.value = this.initialValues.initialPopulation.value;
       }
     },
+    getModelParameters() {
+      modelParameters.initialPopulation = this.initialValues.initialPopulation.value;
+      modelParameters.initialInfections = this.initialValues.initialInfections.value;
+      return modelParameters;
+    },
     gotoNextDays(nDays = 1) {
-      if (this.model === null) {
-        this.correctInitialValues();
-        this.model = new InfectionModel(
-          this.initialValues.initialPopulation.value,
-          this.initialValues.initialInfections.value
-        );
+      if (this.models === null) {
+        this.initializeModels();
       }
 
-      let states = [];
-      for (let i = 0; i < nDays; i++) {
-        this.model.update(this.activeMeasures);
-        states.push(this.model.getState());
-      }
+      let states = this.updateModels(nDays);
 
       this.$refs.charts.update(...states);
       this.$refs.statistics.update(...states);
     },
+    initializeModels() {
+      this.correctInitialValues();
+      let modelParameters = this.getModelParameters();
+      this.models = [];
+      this.modelState = {};
+      let model;
+      modelTypes.forEach(modelType => {
+        model = new modelType(modelParameters);
+        this.models.push(model);
+        Object.assign(this.modelState, model.getState());
+      });
+    },
+    updateModels(nDays) {
+      let states = [];
+      let newState;
+      let result;
+      for (let i = 0; i < nDays; i++) {
+        newState = { ...this.modelState };
+        for (let j = 0; j < this.models.length; j++) {
+          result = this.models[j].update(newState, this.activeMeasures);
+          Object.assign(newState, result);
+        }
+        this.modelState = newState;
+        states.push(newState);
+      }
+      return states;
+    },
     reset() {
-      this.model = null;
+      this.models = null;
       this.activeMeasures = [];
       this.$refs.charts.reset();
       this.$refs.statistics.reset();

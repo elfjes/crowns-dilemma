@@ -45,6 +45,11 @@ export default {
               backgroundColor: chartColors.red
             },
             {
+              label: "Hospitalized",
+              yAttribute: "hospitalizedPeople",
+              backgroundColor: chartColors.purple
+            },
+            {
               label: "Recovered",
               yAttribute: "curedPeople",
               backgroundColor: chartColors.green
