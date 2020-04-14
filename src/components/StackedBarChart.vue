@@ -5,17 +5,8 @@
 <script>
 import Chart from "chart.js";
 
-const chartColors = {
-  red: "rgb(255, 99, 132)",
-  orange: "rgb(255, 159, 64)",
-  yellow: "rgb(255, 205, 86)",
-  green: "rgb(75, 192, 192)",
-  blue: "rgb(54, 162, 235)",
-  purple: "rgb(153, 102, 255)",
-  grey: "rgb(201, 203, 207)"
-};
 export default {
-  name: "Graph",
+  name: "StackedBarChart",
   props: {
     id: {
       type: String
@@ -24,39 +15,7 @@ export default {
       type: String
     },
     config: {
-      type: Object,
-      default() {
-        return {
-          xAttribute: "day",
-          datasets: [
-            {
-              label: "Uninfected",
-              yAttribute: "uninfectedPeople",
-              backgroundColor: chartColors.blue
-            },
-            {
-              label: "Infected",
-              yAttribute: "infectedPeople",
-              backgroundColor: chartColors.yellow
-            },
-            {
-              label: "Sick",
-              yAttribute: "sickPeople",
-              backgroundColor: chartColors.red
-            },
-            {
-              label: "Hospitalized",
-              yAttribute: "hospitalizedPeople",
-              backgroundColor: chartColors.purple
-            },
-            {
-              label: "Recovered",
-              yAttribute: "curedPeople",
-              backgroundColor: chartColors.green
-            }
-          ]
-        };
-      }
+      type: Object
     }
   },
   data() {
@@ -78,31 +37,6 @@ export default {
             }
           ]
         }
-      },
-      data: {
-        labels: [],
-        datasets: [
-          {
-            label: "Uninfected",
-            data: [],
-            backgroundColor: []
-          },
-          {
-            label: "Infected",
-            data: [],
-            backgroundColor: []
-          },
-          {
-            label: "Sick",
-            data: [],
-            backgroundColor: []
-          },
-          {
-            label: "Recovered",
-            data: [],
-            backgroundColor: []
-          }
-        ]
       }
     };
   },
@@ -132,7 +66,7 @@ export default {
     },
     update(...updates) {
       updates.forEach(update => {
-        this.chart.data.labels.push(update["day"]);
+        this.chart.data.labels.push(update[this.config.xAttribute]);
         for (let i = 0; i < this.config.datasets.length; i++) {
           this.chart.data.datasets[i].data.push(update[this.config.datasets[i].yAttribute]);
           this.chart.data.datasets[i].backgroundColor.push(this.config.datasets[i].backgroundColor);

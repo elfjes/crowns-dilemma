@@ -26,13 +26,14 @@
 
 <script>
 import BarChart from "./BarChart";
-import TotalDistributionChart from "./TotalDistributionChart";
+import StackedBarChart from "./StackedBarChart";
+import { chartColors } from "@/chartHelpers";
 
 export default {
   name: "Charts",
   components: {
     cdBarChart: BarChart,
-    cdTotalDistributionChart: TotalDistributionChart
+    cdStackedBarChart: StackedBarChart
   },
   data() {
     return {
@@ -49,8 +50,37 @@ export default {
         {
           id: "sickpeoplechart",
           title: "Total Distribution",
-          component: "cdTotalDistributionChart",
-          config: undefined
+          component: "cdStackedBarChart",
+          config: {
+            xAttribute: "day",
+            datasets: [
+              {
+                label: "Uninfected",
+                yAttribute: "uninfectedPeople",
+                backgroundColor: chartColors.blue
+              },
+              {
+                label: "Infected",
+                yAttribute: "infectedPeople",
+                backgroundColor: chartColors.yellow
+              },
+              {
+                label: "Sick",
+                yAttribute: "sickPeople",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "Hospitalized",
+                yAttribute: "hospitalizedPeople",
+                backgroundColor: chartColors.purple
+              },
+              {
+                label: "Recovered",
+                yAttribute: "curedPeople",
+                backgroundColor: chartColors.green
+              }
+            ]
+          }
         }
       ],
       activeChart: "infectionchart"
