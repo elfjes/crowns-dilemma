@@ -1,4 +1,4 @@
-import { integrate } from "../helpers";
+import { integrate } from "@/helpers";
 
 export default class InfectionModel {
   constructor(parameters) {
