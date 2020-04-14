@@ -1,4 +1,4 @@
-import { Buckets } from "../helpers";
+import { Buckets } from "@/helpers";
 
 export default class SicknessModel {
   constructor(parameters) {

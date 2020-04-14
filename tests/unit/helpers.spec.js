@@ -1,4 +1,4 @@
-import { Buckets } from "../../src/helpers";
+import { Buckets } from "@/helpers";
 
 describe("helpers.js", () => {
   test("new buckets is filled with 0", () => {

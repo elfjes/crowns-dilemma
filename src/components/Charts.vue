@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import BarChart from "./BarChart";
-import TotalDistributionChart from "./TotalDistributionChart";
+import TotalDistributionChart from "@/components/TotalDistributionChart";
+import BarChart from "@/components/BarChart";
 
 export default {
   name: "Charts",
