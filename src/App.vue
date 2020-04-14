@@ -108,18 +108,21 @@ export default {
       let modelParameters = this.getModelParameters();
       this.models = [];
       this.modelState = {};
+      let model;
       modelTypes.forEach(modelType => {
-        let model = new modelType(modelParameters);
+        model = new modelType(modelParameters);
         this.models.push(model);
         Object.assign(this.modelState, model.getState());
       });
     },
     updateModels(nDays) {
       let states = [];
+      let newState;
+      let result;
       for (let i = 0; i < nDays; i++) {
-        let newState = { ...this.modelState };
+        newState = { ...this.modelState };
         for (let j = 0; j < this.models.length; j++) {
-          let result = this.models[j].update(newState, this.activeMeasures);
+          result = this.models[j].update(newState, this.activeMeasures);
           Object.assign(newState, result);
         }
         this.modelState = newState;

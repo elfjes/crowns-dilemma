@@ -3,32 +3,46 @@ import { integrate } from "../helpers";
 export default class InfectionModel {
   constructor(parameters) {
     this.initialize();
-    this.partiallyInfected = 0;
     this.parameters = parameters;
   }
 
   initialize() {
     this.day = 0;
     this.newInfections = 0;
+    this.infectedPartial = 0;
   }
 
   update(data, measures) {
     let population = data.population;
-    let uninfectedPeople = data.uninfectedPeople;
-    let sickPeople = data.sickPeople;
+    let uninfectedPeople = data.uninfectedPeople || population;
+    let sickPeople = data.sickPeople || 0;
+    let hospitalizedPeople = data.hospitalizedPeople || 0;
 
     this.day++;
     let R0 = dailyReproduction(calculateInfectivityParameters(measures), this.parameters);
-    this.newInfections = this.calculateNewInfections(R0, uninfectedPeople, population, sickPeople);
+    this.newInfections = this.calculateNewInfections(
+      R0,
+      uninfectedPeople,
+      population,
+      sickPeople,
+      hospitalizedPeople
+    );
 
     return this.getState();
   }
 
-  calculateNewInfections(dailyInfectionRatio, uninfectedPeople, population, sickPeople) {
+  calculateNewInfections(
+    dailyInfectionRatio,
+    uninfectedPeople,
+    population,
+    sickPeople,
+    hospitalizedPeople
+  ) {
     let rawInfections =
-      sickPeople * dailyInfectionRatio * (uninfectedPeople / population) + this.partiallyInfected;
+      (sickPeople + hospitalizedPeople) * dailyInfectionRatio * (uninfectedPeople / population) +
+      this.infectedPartial;
     let rv = Math.floor(rawInfections);
-    this.partiallyInfected = rawInfections - rv;
+    this.infectedPartial = rawInfections - rv;
     return rv;
   }
 

@@ -1,7 +1,6 @@
 import InfectionModel, { calculateInfectivityParameters } from "../../src/models/infectionModel";
 import { Measure } from "../../src/measures";
 import modelParameters from "../../src/modelParameters";
-import SicknessModel from "../../src/models/sicknessModel";
 
 describe("calculateModelParameters", () => {
   const baseParameters = {
@@ -60,42 +59,5 @@ describe("InfectionModel", () => {
 
       expect(model.getState().newInfections).toEqual(10);
     }
-  });
-});
-
-describe("sicknessModel", () => {
-  let model = null;
-
-  beforeEach(() => {
-    modelParameters.initialPopulation = 1;
-    modelParameters.initiallyInfectedPeople = 1;
-
-    model = new SicknessModel(modelParameters);
-  });
-
-  function defaultData() {
-    return {
-      newInfections: 0
-    };
-  }
-
-  test("infected people get sick after incubation period", () => {
-    expect(model.getState().sickPeople).toEqual(0);
-
-    for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
-      model.update(defaultData());
-    }
-    expect(model.getState().sickPeople).toEqual(1);
-  });
-  test("sick people are cured after sick period", () => {
-    for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
-      model.update(defaultData());
-    }
-    for (let i = 0; i < modelParameters.sickPeriodDays.mean; i++) {
-      model.update(defaultData());
-    }
-    let result = model.getState();
-    expect(result.sickPeople).toEqual(0);
-    expect(result.curedPeople).toEqual(1);
   });
 });

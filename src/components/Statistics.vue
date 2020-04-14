@@ -32,9 +32,14 @@ export default {
           displayName: "Sick People"
         },
         {
+          ref: "hospitalizedPeople",
+          displayName: "Hospitalized People"
+        },
+        {
           ref: "uninfectedPeople",
           displayName: "Uninfected People"
         },
+
         {
           ref: "curedPeople",
           displayName: "Cured People"
