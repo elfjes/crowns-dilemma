@@ -39,12 +39,12 @@ describe("Sickness model without hospitalizations", () => {
   }
 
   test("infected people get sick after incubation period", () => {
-    expect(model.getState().sickPeople).toEqual(0);
+    expect(model.getState().mildlySickPeople).toEqual(0);
 
     for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
       model.update(defaultData());
     }
-    expect(model.getState().sickPeople).toEqual(1);
+    expect(model.getState().mildlySickPeople).toEqual(1);
   });
   test("sick people are cured after sick period", () => {
     for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
@@ -54,7 +54,7 @@ describe("Sickness model without hospitalizations", () => {
       model.update(defaultData());
     }
     let result = model.getState();
-    expect(result.sickPeople).toEqual(0);
+    expect(result.mildlySickPeople).toEqual(0);
     expect(result.curedPeople).toEqual(1);
   });
 });
@@ -75,7 +75,9 @@ describe("Sickness model with hospitalizations", () => {
 
   test("infected people may get hospitalized", () => {
     let state = model.getState();
-    expect(state.sickPeople).toEqual(4);
+    expect(state.newMildlySickPeople).toEqual(4);
+    expect(state.mildlySickPeople).toEqual(4);
+    expect(state.newHospitalizedPeople).toEqual(6);
     expect(state.hospitalizedPeople).toEqual(6);
   });
   test("hospitalized people are cured after sick period", () => {

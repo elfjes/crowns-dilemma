@@ -15,7 +15,7 @@ export default class InfectionModel {
   update(data, measures) {
     let population = data.population;
     let uninfectedPeople = data.uninfectedPeople || population;
-    let sickPeople = data.sickPeople || 0;
+    let mildlySickPeople = data.mildlySickPeople || 0;
     let hospitalizedPeople = data.hospitalizedPeople || 0;
 
     this.day++;
@@ -24,7 +24,7 @@ export default class InfectionModel {
       R0,
       uninfectedPeople,
       population,
-      sickPeople,
+      mildlySickPeople,
       hospitalizedPeople
     );
 
@@ -35,11 +35,13 @@ export default class InfectionModel {
     dailyInfectionRatio,
     uninfectedPeople,
     population,
-    sickPeople,
+    mildlySickPeople,
     hospitalizedPeople
   ) {
     let rawInfections =
-      (sickPeople + hospitalizedPeople) * dailyInfectionRatio * (uninfectedPeople / population) +
+      (mildlySickPeople + hospitalizedPeople) *
+        dailyInfectionRatio *
+        (uninfectedPeople / population) +
       this.infectedPartial;
     let rv = Math.floor(rawInfections);
     this.infectedPartial = rawInfections - rv;

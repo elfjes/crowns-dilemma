@@ -26,10 +26,10 @@ export default {
         responsive: true,
         lineTension: 1,
         scales: {
-          xAxes: [{ stacked: true }],
+          xAxes: [{ stacked: false }],
           yAxes: [
             {
-              stacked: true,
+              stacked: false,
               ticks: {
                 beginAtZero: true,
                 padding: 25
@@ -58,6 +58,10 @@ export default {
     },
     createChart() {
       const ctx = document.getElementById(this.id);
+      this.options.scales.xAxes[0].stacked =
+        this.config.stacked || this.options.scales.xAxes[0].stacked;
+      this.options.scales.yAxes[0].stacked =
+        this.config.stacked || this.options.scales.xAxes[0].stacked;
       this.chart = new Chart(ctx, {
         type: this.type,
         data: this.emptyChartData(),

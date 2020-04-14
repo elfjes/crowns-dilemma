@@ -41,9 +41,22 @@ export default {
         {
           id: "infectionchart",
           title: "New Infections",
-          component: "cdBarChart",
+          component: "cdStackedBarChart",
           config: {
+            stacked: false,
             xAttribute: "day",
+            datasets: [
+              {
+                label: "New Cases",
+                yAttribute: "newSickPeople",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "New Hospitalizations",
+                yAttribute: "newHospitalizedPeople",
+                backgroundColor: chartColors.purple
+              }
+            ],
             yAttribute: "newInfections"
           }
         },
@@ -52,6 +65,7 @@ export default {
           title: "Total Distribution",
           component: "cdStackedBarChart",
           config: {
+            stacked: true,
             xAttribute: "day",
             datasets: [
               {
@@ -65,8 +79,8 @@ export default {
                 backgroundColor: chartColors.yellow
               },
               {
-                label: "Sick",
-                yAttribute: "sickPeople",
+                label: "Mildly Sick",
+                yAttribute: "mildlySickPeople",
                 backgroundColor: chartColors.red
               },
               {
