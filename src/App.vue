@@ -39,16 +39,16 @@
 </template>
 
 <script>
-import Measures from "./components/Measures";
-import InfectionModel from "./models/infectionModel";
-import modelParameters from "./modelParameters";
-import { measures } from "./measures";
-import MultiField from "./components/MultiField";
-import Charts from "./components/Charts";
-import Statistics from "./components/Statistics";
-import Card from "./components/Card";
-import Footer from "./components/Footer";
-import sicknessModel from "./models/sicknessModel";
+import Measures from "@/components/Measures";
+import InfectionModel from "@/models/infectionModel";
+import modelParameters from "@/modelParameters";
+import { measures } from "@/measures";
+import MultiField from "@/components/MultiField";
+import Charts from "@/components/Charts";
+import Statistics from "@/components/Statistics";
+import Card from "@/components/Card";
+import Footer from "@/components/Footer";
+import sicknessModel from "@/models/sicknessModel";
 
 const modelTypes = [InfectionModel, sicknessModel];
 export default {

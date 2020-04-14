@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import BarChart from "./BarChart";
-import StackedBarChart from "./StackedBarChart";
+import BarChart from "@/components/BarChart";
+import StackedBarChart from "@/components/StackedBarChart";
 import { chartColors } from "@/chartHelpers";
 
 export default {

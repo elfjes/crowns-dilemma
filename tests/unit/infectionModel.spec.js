@@ -1,6 +1,6 @@
-import InfectionModel, { calculateInfectivityParameters } from "../../src/models/infectionModel";
-import { Measure } from "../../src/measures";
-import modelParameters from "../../src/modelParameters";
+import InfectionModel, { calculateInfectivityParameters } from "@/models/infectionModel";
+import { Measure } from "@/measures";
+import modelParameters from "@/modelParameters";
 
 describe("calculateModelParameters", () => {
   const baseParameters = {
