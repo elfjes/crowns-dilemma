@@ -25,14 +25,15 @@
 </template>
 
 <script>
-import TotalDistributionChart from "@/components/TotalDistributionChart";
 import BarChart from "@/components/BarChart";
+import StackedBarChart from "@/components/StackedBarChart";
+import { chartColors } from "@/chartHelpers";
 
 export default {
   name: "Charts",
   components: {
     cdBarChart: BarChart,
-    cdTotalDistributionChart: TotalDistributionChart
+    cdStackedBarChart: StackedBarChart
   },
   data() {
     return {
@@ -40,17 +41,60 @@ export default {
         {
           id: "infectionchart",
           title: "New Infections",
-          component: "cdBarChart",
+          component: "cdStackedBarChart",
           config: {
+            stacked: false,
             xAttribute: "day",
+            datasets: [
+              {
+                label: "New Cases",
+                yAttribute: "newSickPeople",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "New Hospitalizations",
+                yAttribute: "newHospitalizedPeople",
+                backgroundColor: chartColors.purple
+              }
+            ],
             yAttribute: "newInfections"
           }
         },
         {
           id: "sickpeoplechart",
           title: "Total Distribution",
-          component: "cdTotalDistributionChart",
-          config: undefined
+          component: "cdStackedBarChart",
+          config: {
+            stacked: true,
+            xAttribute: "day",
+            datasets: [
+              {
+                label: "Uninfected",
+                yAttribute: "uninfectedPeople",
+                backgroundColor: chartColors.blue
+              },
+              {
+                label: "Infected",
+                yAttribute: "infectedPeople",
+                backgroundColor: chartColors.yellow
+              },
+              {
+                label: "Mildly Sick",
+                yAttribute: "mildlySickPeople",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "Hospitalized",
+                yAttribute: "hospitalizedPeople",
+                backgroundColor: chartColors.purple
+              },
+              {
+                label: "Recovered",
+                yAttribute: "curedPeople",
+                backgroundColor: chartColors.green
+              }
+            ]
+          }
         }
       ],
       activeChart: "infectionchart"

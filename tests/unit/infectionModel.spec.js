@@ -35,7 +35,7 @@ describe("InfectionModel", () => {
     return {
       uninfectedPeople: 0,
       population: 1,
-      sickPeople: 0
+      mildlySickPeople: 0
     };
   }
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe("InfectionModel", () => {
       model.update({
         uninfectedPeople: 100,
         population: 100,
-        sickPeople: 10
+        mildlySickPeople: 10
       });
 
       expect(model.getState().newInfections).toEqual(10);

@@ -20,7 +20,9 @@ export default class SicknessModel {
     this.infectedPeople = new Buckets(this.incubationPeriod);
     this.infectedPeople.rotate(this.initialInfections);
 
-    this.sickPeople = new Buckets(this.sickPeriod);
+    this.newMildlySickPeople = 0;
+    this.mildlySickPeople = new Buckets(this.sickPeriod);
+    this.newSickPeople = 0;
     this.curedPeople = 0;
 
     this.hospitalizedPartial = 0;
@@ -32,11 +34,11 @@ export default class SicknessModel {
     let newInfections = data.newInfections || 0;
 
     this.uninfectedPeople -= Math.min(newInfections, this.uninfectedPeople);
-    let newSickPeople = this.infectedPeople.rotate(newInfections);
-    let newHospitalizedPeople = this.calculateHospitalizations(newSickPeople);
-    newSickPeople -= newHospitalizedPeople;
-    this.curedPeople += this.hospitalizedPeople.rotate(newHospitalizedPeople);
-    this.curedPeople += this.sickPeople.rotate(newSickPeople);
+    this.newSickPeople = this.infectedPeople.rotate(newInfections);
+    this.newHospitalizedPeople = this.calculateHospitalizations(this.newSickPeople);
+    this.newMildlySickPeople = this.newSickPeople - this.newHospitalizedPeople;
+    this.curedPeople += this.hospitalizedPeople.rotate(this.newHospitalizedPeople);
+    this.curedPeople += this.mildlySickPeople.rotate(this.newMildlySickPeople);
     return this.getState();
   }
 
@@ -51,8 +53,11 @@ export default class SicknessModel {
     return {
       population: this.population,
       infectedPeople: this.infectedPeople.total,
-      sickPeople: this.sickPeople.total,
+      newSickPeople: this.newSickPeople,
+      newMildlySickPeople: this.newMildlySickPeople,
+      mildlySickPeople: this.mildlySickPeople.total,
       hospitalizedPeople: this.hospitalizedPeople.total,
+      newHospitalizedPeople: this.newHospitalizedPeople,
       uninfectedPeople: this.uninfectedPeople,
       curedPeople: this.curedPeople
     };
