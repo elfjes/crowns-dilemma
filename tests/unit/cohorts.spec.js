@@ -1,5 +1,4 @@
 import { createCohorts, PipeCohort, SinkCohort } from "@/cohorts";
-import cohortTypes from "@/cohortTypes";
 
 describe("PipeChort", () => {
   let cohort;
@@ -42,7 +41,7 @@ describe("PipeChort", () => {
 
 describe("createCohorts", () => {
   test("creates cohorts from spec", () => {
-    let specs = { SINK: { type: cohortTypes.SINK }, PIPE: { targets: {}, type: cohortTypes.PIPE } };
+    let specs = { SINK: { type: "SINK" }, PIPE: { targets: {}, type: "PIPE" } };
     let out = createCohorts(specs);
     expect(out.PIPE).toBeInstanceOf(PipeCohort);
     expect(out.SINK).toBeInstanceOf(SinkCohort);

@@ -1,5 +1,4 @@
 import { Buckets, Remainder } from "@/helpers";
-import CohortTypes from "@/cohortTypes";
 
 export function createCohorts(specs) {
   let rv = {};
@@ -7,10 +6,10 @@ export function createCohorts(specs) {
   Object.keys(specs).forEach(id => {
     spec = specs[id];
     switch (spec.type) {
-      case CohortTypes.SINK:
+      case "SINK":
         rv[id] = new SinkCohort(spec);
         break;
-      case CohortTypes.PIPE:
+      case "PIPE":
         rv[id] = new PipeCohort(spec);
     }
   });

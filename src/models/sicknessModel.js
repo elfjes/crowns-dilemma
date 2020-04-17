@@ -4,6 +4,7 @@ export default class SicknessModel {
   constructor(parameters) {
     this.initialPopulation = parameters.initialPopulation;
 
+    this.cohorts = parameters.cohorts;
     this.sickPeriod = parameters.sickPeriodDays.mean;
     this.incubationPeriod = parameters.incubationPeriodDays.mean;
     this.hospitalizationPeriod = parameters.hospitalizationPeriodDays.mean;

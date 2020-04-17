@@ -49,6 +49,7 @@ import Statistics from "@/components/Statistics";
 import Card from "@/components/Card";
 import Footer from "@/components/Footer";
 import sicknessModel from "@/models/sicknessModel";
+import cohortSpecs from "@/cohortSpecs";
 
 const modelTypes = [InfectionModel, sicknessModel];
 export default {
@@ -91,6 +92,7 @@ export default {
     getModelParameters() {
       modelParameters.initialPopulation = this.initialValues.initialPopulation.value;
       modelParameters.initialInfections = this.initialValues.initialInfections.value;
+      modelParameters.cohorts = cohortSpecs;
       return modelParameters;
     },
     gotoNextDays(nDays = 1) {
