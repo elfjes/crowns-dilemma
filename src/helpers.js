@@ -38,3 +38,15 @@ export class Buckets {
     return this.contents.reduce((a, b) => a + b, 0);
   }
 }
+
+export class Remainder {
+  constructor(initialValue = 0) {
+    this.remainder = initialValue;
+  }
+  processValue(value) {
+    value += this.remainder;
+    let rv = Math.floor(value);
+    this.remainder = value - rv;
+    return rv;
+  }
+}

@@ -1,4 +1,4 @@
-import { integrate } from "@/helpers";
+import { integrate, Remainder } from "@/helpers";
 
 export default class InfectionModel {
   constructor(parameters) {
@@ -9,7 +9,7 @@ export default class InfectionModel {
   initialize() {
     this.day = 0;
     this.newInfections = 0;
-    this.infectedPartial = 0;
+    this.infectedPartial = new Remainder();
   }
 
   update(data, measures) {
@@ -38,14 +38,11 @@ export default class InfectionModel {
     mildlySickPeople,
     hospitalizedPeople
   ) {
-    let rawInfections =
+    return this.infectedPartial.processValue(
       (mildlySickPeople + hospitalizedPeople) *
         dailyInfectionRatio *
-        (uninfectedPeople / population) +
-      this.infectedPartial;
-    let rv = Math.floor(rawInfections);
-    this.infectedPartial = rawInfections - rv;
-    return rv;
+        (uninfectedPeople / population)
+    );
   }
 
   getState() {

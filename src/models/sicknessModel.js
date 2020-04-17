@@ -29,8 +29,7 @@ export default class SicknessModel {
     this.hospitalizedPeople = new Buckets(this.hospitalizationPeriod);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  update(data, measures) {
+  update(data) {
     let newInfections = data.newInfections || 0;
 
     this.uninfectedPeople -= Math.min(newInfections, this.uninfectedPeople);

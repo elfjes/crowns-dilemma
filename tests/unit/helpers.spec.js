@@ -1,6 +1,6 @@
-import { Buckets } from "@/helpers";
+import { Buckets, Remainder } from "@/helpers";
 
-describe("helpers.js", () => {
+describe("Buckets", () => {
   test("new buckets is filled with 0", () => {
     let buckets = new Buckets(3);
     expect(buckets.length).toEqual(3);
@@ -25,5 +25,14 @@ describe("helpers.js", () => {
     buckets.setItem(1, 12);
 
     expect(buckets.getItem(1)).toEqual(12);
+  });
+});
+
+describe("Remainder", () => {
+  test("can add value to remainder and get new floored value", () => {
+    let remainder = new Remainder(0.3);
+    let out = remainder.processValue(0.8);
+    expect(remainder.remainder).toBeCloseTo(0.1, 8);
+    expect(out).toEqual(1);
   });
 });
