@@ -20,7 +20,7 @@
       :id="chart.id"
       :title="chart.title"
       :config="chart.config"
-    ></component>
+    />
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas :id="id"></canvas>
+    <canvas :id="id" />
   </div>
 </template>
 

@@ -7,7 +7,7 @@
       <div class="columns">
         <div class="column is-8">
           <div class="box">
-            <cd-charts ref="charts"></cd-charts>
+            <cd-charts ref="charts" />
           </div>
           <div class="buttons">
             <button class="button is-primary" @click="gotoNextDays()">
@@ -23,14 +23,14 @@
         </div>
         <div class="column is-4">
           <cd-card title="Initial Values" start-collapsed>
-            <cd-multi-field v-model="initialValues" :disabled="models !== null"></cd-multi-field>
+            <cd-multi-field v-model="initialValues" :disabled="models !== null" />
           </cd-card>
 
           <cd-card title="Statistics">
-            <cd-statistics ref="statistics"></cd-statistics>
+            <cd-statistics ref="statistics" />
           </cd-card>
 
-          <cd-measures :measures="allMeasures" v-model="activeMeasures"></cd-measures>
+          <cd-measures :measures="allMeasures" v-model="activeMeasures" />
         </div>
       </div>
     </section>

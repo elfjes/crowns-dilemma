@@ -15,7 +15,7 @@
       </p>
     </header>
     <div v-if="visible" class="card-content">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
