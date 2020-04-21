@@ -1,6 +1,5 @@
 import modelParameters from "@/modelParameters";
 import SicknessModel from "@/models/sicknessModel";
-import { createCohorts } from "@/cohorts";
 import cohortSpecs from "@/cohortSpecs";
 
 function getModel(customParameters, ff = false) {
@@ -27,12 +26,15 @@ describe("Sickness model without hospitalizations", () => {
   let model = null;
 
   beforeEach(() => {
-    model = getModel({
-      initialPopulation: 1,
-      initiallyInfectedPeople: 1,
-      hospitalizationFraction: 0,
-      cohorts: createCohorts(cohortSpecs)
-    });
+    model = getModel(
+      {
+        initialPopulation: 1,
+        initiallyInfectedPeople: 1,
+        hospitalizationFraction: 0,
+        cohorts: cohortSpecs
+      },
+      true
+    );
   });
 
   function defaultData() {
@@ -42,22 +44,24 @@ describe("Sickness model without hospitalizations", () => {
   }
 
   test("infected people get sick after incubation period", () => {
-    expect(model.getState().mildlySickPeople).toEqual(0);
-
-    for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
-      model.update(defaultData());
-    }
-    expect(model.getState().mildlySickPeople).toEqual(1);
+    expect(model.getState().mildlySickPeople).toEqual(
+      expect.objectContaining({
+        total: 1,
+        latest: 1
+      })
+    );
   });
   test("sick people are cured after sick period", () => {
-    for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
-      model.update(defaultData());
-    }
     for (let i = 0; i < modelParameters.sickPeriodDays.mean; i++) {
       model.update(defaultData());
     }
     let result = model.getState();
-    expect(result.mildlySickPeople).toEqual(0);
+    expect(result.mildlySickPeople).toEqual(
+      expect.objectContaining({
+        total: 0,
+        latest: 0
+      })
+    );
     expect(result.curedPeople).toEqual(1);
   });
 });
@@ -112,7 +116,7 @@ describe("Sickness model with hospitalizations", () => {
         initialPopulation: 10,
         initiallyInfectedPeople: 10,
         hospitalizationFraction: 0.6,
-        cohorts: createCohorts(cohortSpec)
+        cohorts: cohortSpec
       },
       true
     );
@@ -120,9 +124,10 @@ describe("Sickness model with hospitalizations", () => {
 
   test("infected people may get hospitalized", () => {
     let state = model.getState();
-    expect(state.newMildlySickPeople).toEqual(4);
-    expect(state.mildlySickPeople).toEqual(4);
-    expect(state.newHospitalizedPeople).toEqual(6);
+    expect.objectContaining({
+      total: 4,
+      latest: 4
+    });
     expect(state.hospitalizedPeople).toEqual(6);
   });
   test("hospitalized people are cured after sick period", () => {
@@ -131,7 +136,7 @@ describe("Sickness model with hospitalizations", () => {
         initialPopulation: 1,
         initiallyInfectedPeople: 1,
         hospitalizationFraction: 1,
-        cohorts: createCohorts(cohortSpec)
+        cohorts: cohortSpec
       },
       true
     );

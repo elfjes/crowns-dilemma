@@ -73,23 +73,33 @@ export default {
               },
               {
                 label: "Infected",
-                yAttribute: "infectedPeople",
+                yAttribute: "cohorts.INFECTED.total",
                 backgroundColor: chartColors.yellow
               },
               {
                 label: "Mildly Sick",
-                yAttribute: "mildlySickPeople",
-                backgroundColor: chartColors.red
+                yAttribute: "cohorts.MILD.total",
+                backgroundColor: chartColors.orange
               },
               {
                 label: "Hospitalized",
-                yAttribute: "hospitalizedPeople",
+                yAttribute: "cohorts.HOSPITALIZED.total",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "Intensive Care",
+                yAttribute: "cohorts.INTENSIVE_CARE.total",
                 backgroundColor: chartColors.purple
               },
               {
                 label: "Recovered",
                 yAttribute: "curedPeople",
                 backgroundColor: chartColors.green
+              },
+              {
+                label: "Deceased",
+                yAttribute: "cohorts.DEAD.total",
+                backgroundColor: chartColors.darkGrey
               }
             ]
           }

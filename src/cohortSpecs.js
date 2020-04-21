@@ -59,9 +59,11 @@ export default {
     contagiousness: 0.2
   },
   CURED: {
-    type: "SINK"
+    type: "SINK",
+    contagiousness: 0
   },
   DEAD: {
-    type: "SINK"
+    type: "SINK",
+    contagiousness: 0
   }
 };

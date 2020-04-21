@@ -1,10 +1,11 @@
 import { Buckets } from "@/helpers";
+import { createCohorts } from "@/cohorts";
 
 export default class SicknessModel {
   constructor(parameters) {
     this.initialPopulation = parameters.initialPopulation;
 
-    this.cohorts = parameters.cohorts || {};
+    this.cohorts = createCohorts(parameters.cohorts || {});
     this.sickPeriod = parameters.sickPeriodDays.mean;
     this.incubationPeriod = parameters.incubationPeriodDays.mean;
     this.hospitalizationPeriod = parameters.hospitalizationPeriodDays.mean;
@@ -17,6 +18,7 @@ export default class SicknessModel {
   initialize() {
     this.population = this.initialPopulation;
     this.uninfectedPeople = this.initialPopulation - this.initialInfections;
+
     this.cohorts.INFECTED.processNewPeople(this.initialInfections);
     this.infectedPeople = new Buckets(this.incubationPeriod);
     this.infectedPeople.rotate(this.initialInfections);
@@ -75,6 +77,10 @@ export default class SicknessModel {
   }
 
   getState() {
+    let cohorts = {};
+    Object.keys(this.cohorts).forEach(id => {
+      cohorts[id] = this.cohorts[id].getState();
+    });
     return {
       population: this.population,
       infectedPeople: this.cohorts.INFECTED.total,
@@ -83,12 +89,12 @@ export default class SicknessModel {
         (this.cohorts.HOSPITALIZED ? this.cohorts.HOSPITALIZED.latest : 0) +
         (this.cohorts.INTENSIVE_CARE ? this.cohorts.HOSPITALIZED.latest : 0),
       newMildlySickPeople: this.cohorts.MILD.latest,
-      mildlySickPeople: this.cohorts.MILD.total,
+      mildlySickPeople: this.cohorts.MILD.getState(),
       hospitalizedPeople: this.cohorts.HOSPITALIZED.total,
       newHospitalizedPeople: this.cohorts.HOSPITALIZED.latest,
       uninfectedPeople: this.uninfectedPeople,
       curedPeople: this.cohorts.CURED.total,
-      cohorts: this.cohorts
+      cohorts: cohorts
     };
   }
 }

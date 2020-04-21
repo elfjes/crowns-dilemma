@@ -2,8 +2,8 @@ import { integrate, Remainder } from "@/helpers";
 
 export default class InfectionModel {
   constructor(parameters) {
-    this.initialize();
     this.parameters = parameters;
+    this.initialize();
   }
 
   initialize() {
@@ -11,12 +11,9 @@ export default class InfectionModel {
     this.newInfections = 0;
     this.infectedPartial = new Remainder();
   }
-
   update(data, measures) {
     let population = data.population;
     let uninfectedPeople = data.uninfectedPeople || population;
-    let mildlySickPeople = data.mildlySickPeople || 0;
-    let hospitalizedPeople = data.hospitalizedPeople || 0;
 
     this.day++;
     let R0 = dailyReproduction(calculateInfectivityParameters(measures), this.parameters);
@@ -24,24 +21,24 @@ export default class InfectionModel {
       R0,
       uninfectedPeople,
       population,
-      mildlySickPeople,
-      hospitalizedPeople
+      this.getWeightedContagiousPeople(data.cohorts || {})
     );
 
     return this.getState();
   }
-
+  getWeightedContagiousPeople(cohorts) {
+    return Object.values(cohorts).reduce((cur, cohort) => {
+      return cur + cohort.weightedContagiousPeople;
+    }, 0);
+  }
   calculateNewInfections(
     dailyInfectionRatio,
     uninfectedPeople,
     population,
-    mildlySickPeople,
-    hospitalizedPeople
+    weightedContagiousPeople
   ) {
     return this.infectedPartial.processValue(
-      (mildlySickPeople + hospitalizedPeople) *
-        dailyInfectionRatio *
-        (uninfectedPeople / population)
+      weightedContagiousPeople * dailyInfectionRatio * (uninfectedPeople / population)
     );
   }
 

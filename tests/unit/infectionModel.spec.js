@@ -54,7 +54,11 @@ describe("InfectionModel", () => {
       model.update({
         uninfectedPeople: 100,
         population: 100,
-        mildlySickPeople: 10
+        cohorts: {
+          MILD: {
+            weightedContagiousPeople: 10
+          }
+        }
       });
 
       expect(model.getState().newInfections).toEqual(10);

@@ -68,10 +68,18 @@ export class PipeCohort {
   get latest() {
     return Object.values(this.buckets).reduce((currVal, bucket) => currVal + bucket.latest, 0);
   }
+  getState() {
+    return {
+      latest: this.latest,
+      total: this.total,
+      weightedContagiousPeople: this.total * this.contagiousness
+    };
+  }
 }
 
 export class SinkCohort {
-  constructor() {
+  constructor(spec) {
+    this.contagiousness = spec.contagiousness || 0;
     this.total = 0;
     this.latest = 0;
   }
@@ -88,6 +96,13 @@ export class SinkCohort {
     return this.getOutflow();
   }
   getCurrentPeople() {
-    return this.currentPeople;
+    return this.total;
+  }
+  getState() {
+    return {
+      latest: this.latest,
+      total: this.total,
+      weightedContagiousPeople: this.total * this.contagiousness
+    };
   }
 }

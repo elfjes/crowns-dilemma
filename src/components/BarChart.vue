@@ -5,8 +5,21 @@
 <script>
 import Chart from "chart.js";
 
+function getNestedValue(dottedKey, obj) {
+  let keys = dottedKey.split(".");
+  let out = obj;
+  let key;
+  for (let i = 0; i < keys.length; i++) {
+    key = keys[i];
+    if (out[key] === undefined) {
+      return undefined;
+    }
+    out = out[key];
+  }
+  return out;
+}
 export default {
-  name: "StackedBarChart",
+  name: "BarChart",
   props: {
     id: {
       type: String
@@ -72,7 +85,9 @@ export default {
       updates.forEach(update => {
         this.chart.data.labels.push(update[this.config.xAttribute]);
         for (let i = 0; i < this.config.datasets.length; i++) {
-          this.chart.data.datasets[i].data.push(update[this.config.datasets[i].yAttribute]);
+          this.chart.data.datasets[i].data.push(
+            getNestedValue(this.config.datasets[i].yAttribute, update)
+          );
           this.chart.data.datasets[i].backgroundColor.push(this.config.datasets[i].backgroundColor);
         }
       });
