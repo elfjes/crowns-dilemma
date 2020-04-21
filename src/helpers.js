@@ -18,6 +18,12 @@ export class Buckets {
     this.length = length;
     this.contents = new Array(length).fill(0);
   }
+  pull() {
+    return this.contents.shift();
+  }
+  push(newValue) {
+    this.contents.push(newValue);
+  }
   getItem(index) {
     if (index > this.length) {
       throw new RangeError("Index out of range");
@@ -31,10 +37,39 @@ export class Buckets {
     this.contents[index] = value;
   }
   rotate(newValue) {
-    this.contents.push(newValue);
-    return this.contents.shift();
+    this.push(newValue);
+    return this.pull();
   }
   get total() {
     return this.contents.reduce((a, b) => a + b, 0);
   }
+  get latest() {
+    return this.contents[this.contents.length - 1];
+  }
+}
+
+export class Remainder {
+  constructor(initialValue = 0) {
+    this.remainder = initialValue;
+  }
+  processValue(value) {
+    value += this.remainder;
+    let rv = Math.floor(value);
+    this.remainder = value - rv;
+    return rv;
+  }
+}
+
+export function getNestedValue(dottedKey, obj) {
+  let keys = dottedKey.split(".");
+  let out = obj;
+  let key;
+  for (let i = 0; i < keys.length; i++) {
+    key = keys[i];
+    if (out[key] === undefined) {
+      return undefined;
+    }
+    out = out[key];
+  }
+  return out;
 }

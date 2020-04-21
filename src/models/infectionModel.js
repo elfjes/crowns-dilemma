@@ -1,22 +1,19 @@
-import { integrate } from "@/helpers";
+import { integrate, Remainder } from "@/helpers";
 
 export default class InfectionModel {
   constructor(parameters) {
-    this.initialize();
     this.parameters = parameters;
+    this.initialize();
   }
 
   initialize() {
     this.day = 0;
     this.newInfections = 0;
-    this.infectedPartial = 0;
+    this.infectedPartial = new Remainder();
   }
-
   update(data, measures) {
     let population = data.population;
     let uninfectedPeople = data.uninfectedPeople || population;
-    let mildlySickPeople = data.mildlySickPeople || 0;
-    let hospitalizedPeople = data.hospitalizedPeople || 0;
 
     this.day++;
     let R0 = dailyReproduction(calculateInfectivityParameters(measures), this.parameters);
@@ -24,28 +21,25 @@ export default class InfectionModel {
       R0,
       uninfectedPeople,
       population,
-      mildlySickPeople,
-      hospitalizedPeople
+      this.getWeightedContagiousPeople(data.cohorts || {})
     );
 
     return this.getState();
   }
-
+  getWeightedContagiousPeople(cohorts) {
+    return Object.values(cohorts).reduce((cur, cohort) => {
+      return cur + cohort.weightedContagiousPeople;
+    }, 0);
+  }
   calculateNewInfections(
     dailyInfectionRatio,
     uninfectedPeople,
     population,
-    mildlySickPeople,
-    hospitalizedPeople
+    weightedContagiousPeople
   ) {
-    let rawInfections =
-      (mildlySickPeople + hospitalizedPeople) *
-        dailyInfectionRatio *
-        (uninfectedPeople / population) +
-      this.infectedPartial;
-    let rv = Math.floor(rawInfections);
-    this.infectedPartial = rawInfections - rv;
-    return rv;
+    return this.infectedPartial.processValue(
+      weightedContagiousPeople * dailyInfectionRatio * (uninfectedPeople / population)
+    );
   }
 
   getState() {

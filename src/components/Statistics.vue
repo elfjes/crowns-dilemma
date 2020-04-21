@@ -14,35 +14,41 @@
 </template>
 
 <script>
+import { getNestedValue } from "@/helpers";
+
 export default {
   name: "Statistics",
   data() {
     return {
       properties: [
         {
-          ref: "newInfections",
-          displayName: "New Infections"
+          ref: "newSickPeople",
+          displayName: "New Cases"
         },
         {
-          ref: "infectedPeople",
-          displayName: "Infected People"
+          ref: "cohorts.MILD.total",
+          displayName: "Mildly Sick"
         },
         {
-          ref: "sickPeople",
-          displayName: "Sick People"
+          ref: "cohorts.HOSPITALIZED.total",
+          displayName: "Hospitalized"
         },
         {
-          ref: "hospitalizedPeople",
-          displayName: "Hospitalized People"
+          ref: "cohorts.INTENSIVE_CARE.total",
+          displayName: "Intensive Care"
         },
         {
           ref: "uninfectedPeople",
-          displayName: "Uninfected People"
+          displayName: "Uninfected"
         },
 
         {
-          ref: "curedPeople",
-          displayName: "Cured People"
+          ref: "cohorts.CURED.total",
+          displayName: "Cured"
+        },
+        {
+          ref: "cohorts.DEAD.total",
+          displayName: "Deceased"
         }
       ],
       state: {}
@@ -50,11 +56,8 @@ export default {
   },
   methods: {
     getState(ref) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.state.hasOwnProperty(ref)) {
-        return this.state[ref];
-      }
-      return "-";
+      let val = getNestedValue(ref, this.state);
+      return val === undefined ? "-" : val;
     },
     update(...states) {
       this.state = states[states.length - 1];

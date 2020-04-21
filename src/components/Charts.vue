@@ -26,34 +26,37 @@
 
 <script>
 import BarChart from "@/components/BarChart";
-import StackedBarChart from "@/components/StackedBarChart";
 import { chartColors } from "@/chartHelpers";
 
 export default {
   name: "Charts",
   components: {
-    cdBarChart: BarChart,
-    cdStackedBarChart: StackedBarChart
+    cdBarChart: BarChart
   },
   data() {
     return {
       charts: [
         {
           id: "infectionchart",
-          title: "New Infections",
-          component: "cdStackedBarChart",
+          title: "New Cases",
+          component: "cdBarChart",
           config: {
-            stacked: false,
+            stacked: true,
             xAttribute: "day",
             datasets: [
               {
-                label: "New Cases",
-                yAttribute: "newSickPeople",
-                backgroundColor: chartColors.red
+                label: "New Mild Cases",
+                yAttribute: "cohorts.MILD.latest",
+                backgroundColor: chartColors.orange
               },
               {
                 label: "New Hospitalizations",
-                yAttribute: "newHospitalizedPeople",
+                yAttribute: "cohorts.HOSPITALIZED.latest",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "New on Intensive Care",
+                yAttribute: "cohorts.INTENSIVE_CARE.latest",
                 backgroundColor: chartColors.purple
               }
             ],
@@ -63,7 +66,7 @@ export default {
         {
           id: "sickpeoplechart",
           title: "Total Distribution",
-          component: "cdStackedBarChart",
+          component: "cdBarChart",
           config: {
             stacked: true,
             xAttribute: "day",
@@ -75,23 +78,33 @@ export default {
               },
               {
                 label: "Infected",
-                yAttribute: "infectedPeople",
+                yAttribute: "cohorts.INFECTED.total",
                 backgroundColor: chartColors.yellow
               },
               {
                 label: "Mildly Sick",
-                yAttribute: "mildlySickPeople",
-                backgroundColor: chartColors.red
+                yAttribute: "cohorts.MILD.total",
+                backgroundColor: chartColors.orange
               },
               {
                 label: "Hospitalized",
-                yAttribute: "hospitalizedPeople",
+                yAttribute: "cohorts.HOSPITALIZED.total",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "Intensive Care",
+                yAttribute: "cohorts.INTENSIVE_CARE.total",
                 backgroundColor: chartColors.purple
               },
               {
                 label: "Recovered",
-                yAttribute: "curedPeople",
+                yAttribute: "cohorts.CURED.total",
                 backgroundColor: chartColors.green
+              },
+              {
+                label: "Deceased",
+                yAttribute: "cohorts.DEAD.total",
+                backgroundColor: chartColors.darkGrey
               }
             ]
           }

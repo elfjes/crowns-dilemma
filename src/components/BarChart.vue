@@ -1,14 +1,13 @@
 <template>
-  <div>
-    <canvas :id="id" />
-  </div>
+  <canvas :id="id" />
 </template>
 
 <script>
 import Chart from "chart.js";
+import { getNestedValue } from "@/helpers";
 
 export default {
-  name: "Graph",
+  name: "BarChart",
   props: {
     id: {
       type: String
@@ -23,15 +22,15 @@ export default {
   data() {
     return {
       chart: null,
-      backgroundColor: "rgba(54,73,93,.5)",
-      borderColor: "#36495d",
       type: "bar",
       options: {
         responsive: true,
         lineTension: 1,
         scales: {
+          xAxes: [{ stacked: false }],
           yAxes: [
             {
+              stacked: false,
               ticks: {
                 beginAtZero: true,
                 padding: 25
@@ -39,38 +38,31 @@ export default {
             }
           ]
         }
-      },
-      data: {
-        labels: [],
-        datasets: [
-          {
-            label: this.title,
-            data: [],
-            backgroundColor: [],
-            borderColor: [],
-            borderWidth: 3
-          }
-        ]
       }
     };
   },
   methods: {
     emptyChartData() {
-      return {
+      let rv = {
         labels: [],
-        datasets: [
-          {
-            label: this.title,
-            data: [],
-            backgroundColor: [],
-            borderColor: [],
-            borderWidth: 3
-          }
-        ]
+        datasets: []
       };
+      this.config.datasets.forEach(datasetConfig => {
+        rv.datasets.push({
+          label: datasetConfig.label,
+          data: [],
+          backgroundColor: []
+        });
+      });
+
+      return rv;
     },
     createChart() {
       const ctx = document.getElementById(this.id);
+      this.options.scales.xAxes[0].stacked =
+        this.config.stacked || this.options.scales.xAxes[0].stacked;
+      this.options.scales.yAxes[0].stacked =
+        this.config.stacked || this.options.scales.xAxes[0].stacked;
       this.chart = new Chart(ctx, {
         type: this.type,
         data: this.emptyChartData(),
@@ -80,9 +72,12 @@ export default {
     update(...updates) {
       updates.forEach(update => {
         this.chart.data.labels.push(update[this.config.xAttribute]);
-        this.chart.data.datasets[0].data.push(update[this.config.yAttribute]);
-        this.chart.data.datasets[0].backgroundColor.push(this.backgroundColor);
-        this.chart.data.datasets[0].borderColor.push(this.borderColor);
+        for (let i = 0; i < this.config.datasets.length; i++) {
+          this.chart.data.datasets[i].data.push(
+            getNestedValue(this.config.datasets[i].yAttribute, update)
+          );
+          this.chart.data.datasets[i].backgroundColor.push(this.config.datasets[i].backgroundColor);
+        }
       });
       this.chart.update();
     },

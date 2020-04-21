@@ -2,6 +2,8 @@ import InfectionModel, { calculateInfectivityParameters } from "@/models/infecti
 import { Measure } from "@/measures";
 import modelParameters from "@/modelParameters";
 
+const incubationPeriod = modelParameters.cohorts.INFECTED.targets.MILD.durationDays;
+
 describe("calculateModelParameters", () => {
   const baseParameters = {
     c1: 1,
@@ -50,11 +52,15 @@ describe("InfectionModel", () => {
     let data = defaultData();
     data.sickPeople = 1;
 
-    for (let i = 0; i < modelParameters.incubationPeriodDays.mean; i++) {
+    for (let i = 0; i < incubationPeriod; i++) {
       model.update({
         uninfectedPeople: 100,
         population: 100,
-        mildlySickPeople: 10
+        cohorts: {
+          MILD: {
+            weightedContagiousPeople: 10
+          }
+        }
       });
 
       expect(model.getState().newInfections).toEqual(10);
