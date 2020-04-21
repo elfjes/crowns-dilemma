@@ -1,13 +1,15 @@
 import modelParameters from "@/modelParameters";
 import SicknessModel from "@/models/sicknessModel";
 import cohortSpecs from "@/cohortSpecs";
+const incubationPeriod = modelParameters.cohorts.INFECTED.targets.MILD.durationDays;
+const hospitalizationPeriod = modelParameters.cohorts.HOSPITALIZED.targets.CURED.durationDays;
 
 function getModel(customParameters, ff = false) {
   let parameters = { ...modelParameters, ...customParameters };
   let model = new SicknessModel(parameters);
 
   if (ff) {
-    fastForwardIncubationPeriod(model, parameters.incubationPeriodDays.mean, defaultData());
+    fastForwardIncubationPeriod(model, incubationPeriod, defaultData());
   }
   return model;
 }
@@ -52,7 +54,7 @@ describe("Sickness model without hospitalizations", () => {
     );
   });
   test("sick people are cured after sick period", () => {
-    for (let i = 0; i < modelParameters.sickPeriodDays.mean; i++) {
+    for (let i = 0; i < incubationPeriod; i++) {
       model.update(defaultData());
     }
     let result = model.getState();
@@ -142,7 +144,7 @@ describe("Sickness model with hospitalizations", () => {
       },
       true
     );
-    for (let i = 0; i < modelParameters.hospitalizationPeriodDays.mean; i++) {
+    for (let i = 0; i < hospitalizationPeriod; i++) {
       model.update(defaultData());
     }
     let result = model.getState();
