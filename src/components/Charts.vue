@@ -93,7 +93,7 @@ export default {
               },
               {
                 label: "Recovered",
-                yAttribute: "curedPeople",
+                yAttribute: "cohorts.CURED.total",
                 backgroundColor: chartColors.green
               },
               {

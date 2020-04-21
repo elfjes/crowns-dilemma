@@ -59,3 +59,17 @@ export class Remainder {
     return rv;
   }
 }
+
+export function getNestedValue(dottedKey, obj) {
+  let keys = dottedKey.split(".");
+  let out = obj;
+  let key;
+  for (let i = 0; i < keys.length; i++) {
+    key = keys[i];
+    if (out[key] === undefined) {
+      return undefined;
+    }
+    out = out[key];
+  }
+  return out;
+}

@@ -15,7 +15,7 @@ export default {
         durationDays: 7
       }
     },
-    contagiousness: 0.2
+    contagiousness: 0.05
   },
   MILD: {
     type: "PIPE",
