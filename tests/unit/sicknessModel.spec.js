@@ -44,7 +44,7 @@ describe("Sickness model without hospitalizations", () => {
   }
 
   test("infected people get sick after incubation period", () => {
-    expect(model.getState().mildlySickPeople).toEqual(
+    expect(model.getState().cohorts.MILD).toEqual(
       expect.objectContaining({
         total: 1,
         latest: 1
@@ -56,13 +56,13 @@ describe("Sickness model without hospitalizations", () => {
       model.update(defaultData());
     }
     let result = model.getState();
-    expect(result.mildlySickPeople).toEqual(
+    expect(result.cohorts.MILD).toEqual(
       expect.objectContaining({
         total: 0,
         latest: 0
       })
     );
-    expect(result.curedPeople).toEqual(1);
+    expect(result.cohorts.CURED.total).toEqual(1);
   });
 });
 
@@ -124,11 +124,13 @@ describe("Sickness model with hospitalizations", () => {
 
   test("infected people may get hospitalized", () => {
     let state = model.getState();
-    expect.objectContaining({
-      total: 4,
-      latest: 4
-    });
-    expect(state.hospitalizedPeople).toEqual(6);
+
+    expect(state.cohorts.HOSPITALIZED).toEqual(
+      expect.objectContaining({
+        total: 6,
+        latest: 6
+      })
+    );
   });
   test("hospitalized people are cured after sick period", () => {
     model = getModel(
@@ -144,7 +146,7 @@ describe("Sickness model with hospitalizations", () => {
       model.update(defaultData());
     }
     let result = model.getState();
-    expect(result.hospitalizedPeople).toEqual(0);
-    expect(result.curedPeople).toEqual(1);
+    expect(result.cohorts.HOSPITALIZED.total).toEqual(0);
+    expect(result.cohorts.CURED.total).toEqual(1);
   });
 });

@@ -3,15 +3,15 @@ export default {
     type: "PIPE",
     targets: {
       HOSPITALIZED: {
-        ratio: 0.1,
+        ratio: 0.12,
         durationDays: 7
       },
       INTENSIVE_CARE: {
-        ratio: 0.1,
+        ratio: 0.05,
         durationDays: 7
       },
       MILD: {
-        ratio: 0.8,
+        ratio: 0.83,
         durationDays: 7
       }
     },

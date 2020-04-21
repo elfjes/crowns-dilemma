@@ -38,20 +38,25 @@ export default {
       charts: [
         {
           id: "infectionchart",
-          title: "New Infections",
+          title: "New Cases",
           component: "cdBarChart",
           config: {
-            stacked: false,
+            stacked: true,
             xAttribute: "day",
             datasets: [
               {
-                label: "New Cases",
-                yAttribute: "newSickPeople",
-                backgroundColor: chartColors.red
+                label: "New Mild Cases",
+                yAttribute: "cohorts.MILD.latest",
+                backgroundColor: chartColors.orange
               },
               {
                 label: "New Hospitalizations",
-                yAttribute: "newHospitalizedPeople",
+                yAttribute: "cohorts.HOSPITALIZED.latest",
+                backgroundColor: chartColors.red
+              },
+              {
+                label: "New on Intensive Care",
+                yAttribute: "cohorts.INTENSIVE_CARE.latest",
                 backgroundColor: chartColors.purple
               }
             ],
