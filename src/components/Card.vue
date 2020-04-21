@@ -6,11 +6,7 @@
       </p>
       <p class="card-header-icon" aria-label="show/hide content" @click="visible = !visible">
         <span class="icon">
-          <i
-            class="fas"
-            :class="visible ? 'fa-angle-left' : 'fa-angle-down'"
-            aria-hidden="true"
-          ></i>
+          <i class="fas" :class="visible ? 'fa-angle-up' : 'fa-angle-down'" aria-hidden="true"></i>
         </span>
       </p>
     </header>
