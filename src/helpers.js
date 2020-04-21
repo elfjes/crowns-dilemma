@@ -18,6 +18,12 @@ export class Buckets {
     this.length = length;
     this.contents = new Array(length).fill(0);
   }
+  pull() {
+    return this.contents.shift();
+  }
+  push(newValue) {
+    this.contents.push(newValue);
+  }
   getItem(index) {
     if (index > this.length) {
       throw new RangeError("Index out of range");
@@ -31,11 +37,14 @@ export class Buckets {
     this.contents[index] = value;
   }
   rotate(newValue) {
-    this.contents.push(newValue);
-    return this.contents.shift();
+    this.push(newValue);
+    return this.pull();
   }
   get total() {
     return this.contents.reduce((a, b) => a + b, 0);
+  }
+  get latest() {
+    return this.contents[this.contents.length - 1];
   }
 }
 

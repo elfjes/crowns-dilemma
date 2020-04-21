@@ -26,14 +26,12 @@
 
 <script>
 import BarChart from "@/components/BarChart";
-import StackedBarChart from "@/components/StackedBarChart";
 import { chartColors } from "@/chartHelpers";
 
 export default {
   name: "Charts",
   components: {
-    cdBarChart: BarChart,
-    cdStackedBarChart: StackedBarChart
+    cdBarChart: BarChart
   },
   data() {
     return {
@@ -41,7 +39,7 @@ export default {
         {
           id: "infectionchart",
           title: "New Infections",
-          component: "cdStackedBarChart",
+          component: "cdBarChart",
           config: {
             stacked: false,
             xAttribute: "day",
@@ -63,7 +61,7 @@ export default {
         {
           id: "sickpeoplechart",
           title: "Total Distribution",
-          component: "cdStackedBarChart",
+          component: "cdBarChart",
           config: {
             stacked: true,
             xAttribute: "day",

@@ -29,6 +29,10 @@ describe("PipeChort", () => {
       OTHER: 8
     });
   });
+  test("Processing one person adds it to total", () => {
+    cohort.processNewPeople(1);
+    expect(cohort.total).toEqual(1);
+  });
   test("Processing new people returns Buckets output", () => {
     cohort.processNewPeople(10);
     let out = cohort.processNewPeople(0);

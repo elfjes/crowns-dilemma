@@ -28,22 +28,31 @@ export class PipeCohort {
       this.remainders[id] = new Remainder();
     });
   }
-
-  processNewPeople(newPeople) {
-    let remainingNewPeople = newPeople;
+  getOutflow() {
     let rv = {};
+
+    this.targetIds.forEach(id => {
+      rv[id] = this.buckets[id].pull();
+    });
+    return rv;
+  }
+  addNewPeople(newPeople) {
+    let remainingNewPeople = newPeople;
     let toAdd;
 
     this.targetIds.forEach((id, index) => {
-      if (index === this.targetIds.length) {
+      if (index === this.targetIds.length - 1) {
         toAdd = remainingNewPeople;
       } else {
         toAdd = this.remainders[id].processValue(newPeople * this.targets[id].ratio);
       }
-      rv[id] = this.buckets[id].rotate(toAdd);
+      this.buckets[id].push(toAdd);
       remainingNewPeople -= toAdd;
     });
-    return rv;
+  }
+  processNewPeople(newPeople) {
+    this.addNewPeople(newPeople);
+    return this.getOutflow();
   }
   getCurrentPeople() {
     let rv = {};
@@ -53,16 +62,30 @@ export class PipeCohort {
     });
     return rv;
   }
+  get total() {
+    return Object.values(this.buckets).reduce((currVal, bucket) => currVal + bucket.total, 0);
+  }
+  get latest() {
+    return Object.values(this.buckets).reduce((currVal, bucket) => currVal + bucket.latest, 0);
+  }
 }
 
 export class SinkCohort {
   constructor() {
-    this.currentPeople = 0;
+    this.total = 0;
+    this.latest = 0;
+  }
+  getOutflow() {
+    return {};
+  }
+  addNewPeople(newPeople) {
+    this.latest = newPeople;
+    this.total += newPeople;
   }
 
   processNewPeople(newPeople) {
-    this.currentPeople += newPeople;
-    return {};
+    this.addNewPeople(newPeople);
+    return this.getOutflow();
   }
   getCurrentPeople() {
     return this.currentPeople;

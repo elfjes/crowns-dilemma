@@ -2,16 +2,16 @@ export default {
   INFECTED: {
     type: "PIPE",
     targets: {
-      MILD: {
-        ratio: 0.8,
-        durationDays: 7
-      },
       HOSPITALIZED: {
         ratio: 0.1,
         durationDays: 7
       },
       INTENSIVE_CARE: {
         ratio: 0.1,
+        durationDays: 7
+      },
+      MILD: {
+        ratio: 0.8,
         durationDays: 7
       }
     },
@@ -21,13 +21,13 @@ export default {
     type: "PIPE",
 
     targets: {
-      CURED: {
-        ratio: 0.95,
-        durationDays: 7
-      },
       DEAD: {
         ratio: 0.05,
         durationDays: 3
+      },
+      CURED: {
+        ratio: 0.95,
+        durationDays: 7
       }
     },
     contagiousness: 1
@@ -47,13 +47,13 @@ export default {
     type: "PIPE",
 
     targets: {
-      CURED: {
-        ratio: 0.7,
-        durationDays: 21
-      },
       DEAD: {
         ratio: 0.3,
         durationDays: 10
+      },
+      CURED: {
+        ratio: 0.7,
+        durationDays: 21
       }
     },
     contagiousness: 0.2

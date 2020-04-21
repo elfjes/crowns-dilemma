@@ -4,7 +4,7 @@ export default class SicknessModel {
   constructor(parameters) {
     this.initialPopulation = parameters.initialPopulation;
 
-    this.cohorts = parameters.cohorts;
+    this.cohorts = parameters.cohorts || {};
     this.sickPeriod = parameters.sickPeriodDays.mean;
     this.incubationPeriod = parameters.incubationPeriodDays.mean;
     this.hospitalizationPeriod = parameters.hospitalizationPeriodDays.mean;
@@ -17,7 +17,7 @@ export default class SicknessModel {
   initialize() {
     this.population = this.initialPopulation;
     this.uninfectedPeople = this.initialPopulation - this.initialInfections;
-
+    this.cohorts.INFECTED.processNewPeople(this.initialInfections);
     this.infectedPeople = new Buckets(this.incubationPeriod);
     this.infectedPeople.rotate(this.initialInfections);
 
@@ -32,14 +32,39 @@ export default class SicknessModel {
 
   update(data) {
     let newInfections = data.newInfections || 0;
+    newInfections = Math.min(newInfections, this.uninfectedPeople);
+    this.uninfectedPeople -= newInfections;
 
-    this.uninfectedPeople -= Math.min(newInfections, this.uninfectedPeople);
+    let outflows = this.calculateOutflows({
+      INFECTED: newInfections
+    });
+    this.processInflows(outflows);
+
     this.newSickPeople = this.infectedPeople.rotate(newInfections);
     this.newHospitalizedPeople = this.calculateHospitalizations(this.newSickPeople);
     this.newMildlySickPeople = this.newSickPeople - this.newHospitalizedPeople;
     this.curedPeople += this.hospitalizedPeople.rotate(this.newHospitalizedPeople);
     this.curedPeople += this.mildlySickPeople.rotate(this.newMildlySickPeople);
     return this.getState();
+  }
+
+  calculateOutflows(outflows) {
+    Object.values(this.cohorts).forEach(cohort => {
+      let cohortOutflow = cohort.getOutflow();
+      Object.keys(cohortOutflow).forEach(id => {
+        if (outflows[id] === undefined) {
+          outflows[id] = 0;
+        }
+        outflows[id] += cohortOutflow[id];
+      });
+    });
+    return outflows;
+  }
+
+  processInflows(inflows) {
+    Object.keys(inflows).forEach(id => {
+      this.cohorts[id].addNewPeople(inflows[id]);
+    });
   }
 
   calculateHospitalizations(newSickPeople) {
@@ -52,14 +77,18 @@ export default class SicknessModel {
   getState() {
     return {
       population: this.population,
-      infectedPeople: this.infectedPeople.total,
-      newSickPeople: this.newSickPeople,
-      newMildlySickPeople: this.newMildlySickPeople,
-      mildlySickPeople: this.mildlySickPeople.total,
-      hospitalizedPeople: this.hospitalizedPeople.total,
-      newHospitalizedPeople: this.newHospitalizedPeople,
+      infectedPeople: this.cohorts.INFECTED.total,
+      newSickPeople:
+        (this.cohorts.MILD.latest || 0) +
+        (this.cohorts.HOSPITALIZED ? this.cohorts.HOSPITALIZED.latest : 0) +
+        (this.cohorts.INTENSIVE_CARE ? this.cohorts.HOSPITALIZED.latest : 0),
+      newMildlySickPeople: this.cohorts.MILD.latest,
+      mildlySickPeople: this.cohorts.MILD.total,
+      hospitalizedPeople: this.cohorts.HOSPITALIZED.total,
+      newHospitalizedPeople: this.cohorts.HOSPITALIZED.latest,
       uninfectedPeople: this.uninfectedPeople,
-      curedPeople: this.curedPeople
+      curedPeople: this.cohorts.CURED.total,
+      cohorts: this.cohorts
     };
   }
 }

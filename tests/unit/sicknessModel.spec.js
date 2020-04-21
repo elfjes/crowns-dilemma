@@ -1,5 +1,7 @@
 import modelParameters from "@/modelParameters";
 import SicknessModel from "@/models/sicknessModel";
+import { createCohorts } from "@/cohorts";
+import cohortSpecs from "@/cohortSpecs";
 
 function getModel(customParameters, ff = false) {
   let parameters = { ...modelParameters, ...customParameters };
@@ -28,7 +30,8 @@ describe("Sickness model without hospitalizations", () => {
     model = getModel({
       initialPopulation: 1,
       initiallyInfectedPeople: 1,
-      hospitalizationFraction: 0
+      hospitalizationFraction: 0,
+      cohorts: createCohorts(cohortSpecs)
     });
   });
 
@@ -61,13 +64,55 @@ describe("Sickness model without hospitalizations", () => {
 
 describe("Sickness model with hospitalizations", () => {
   let model = null;
+  let cohortSpec = {
+    INFECTED: {
+      type: "PIPE",
+      targets: {
+        HOSPITALIZED: {
+          ratio: 0.6,
+          durationDays: 7
+        },
+        MILD: {
+          ratio: 0.4,
+          durationDays: 7
+        }
+      },
+      contagiousness: 0.2
+    },
+    MILD: {
+      type: "PIPE",
 
+      targets: {
+        CURED: {
+          ratio: 1,
+          durationDays: 7
+        }
+      },
+      contagiousness: 1
+    },
+    HOSPITALIZED: {
+      type: "PIPE",
+
+      targets: {
+        CURED: {
+          ratio: 1,
+          durationDays: 14
+        }
+      },
+      contagiousness: 0.5
+    },
+
+    CURED: {
+      type: "SINK"
+    }
+  };
   beforeEach(() => {
     model = getModel(
       {
         initialPopulation: 10,
         initiallyInfectedPeople: 10,
-        hospitalizationFraction: 0.6
+        hospitalizationFraction: 0.6,
+        cohorts: createCohorts(cohortSpec)
       },
       true
     );
@@ -85,7 +130,8 @@ describe("Sickness model with hospitalizations", () => {
       {
         initialPopulation: 1,
         initiallyInfectedPeople: 1,
-        hospitalizationFraction: 1
+        hospitalizationFraction: 1,
+        cohorts: createCohorts(cohortSpec)
       },
       true
     );
