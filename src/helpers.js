@@ -73,3 +73,8 @@ export function getNestedValue(dottedKey, obj) {
   }
   return out;
 }
+
+export function assignOptionsOrDefaults(obj, options, defaults) {
+  options = { ...defaults, ...options };
+  Object.keys(defaults).forEach(key => (obj[key] = options[key]));
+}
