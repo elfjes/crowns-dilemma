@@ -1,8 +1,12 @@
 import { Field, IntField, NumberField, Schema } from "@/validation";
 
 describe("Schema", () => {
+  let mockLoader = jest.fn(val => val);
   let schema = new Schema({
-    field: new Field({ default: "default" })
+    fields: {
+      field: new Field({ default: "default" })
+    },
+    loaders: [mockLoader]
   });
   test("returns defined field when loading", () => {
     expect(schema.load({ field: 123 })).toEqual({ field: 123 });
@@ -13,6 +17,10 @@ describe("Schema", () => {
 
   test("sets default", () => {
     expect(schema.load({})).toEqual({ field: "default" });
+  });
+  test("additional loaders are called with obj", () => {
+    schema.load({ field: 123 });
+    expect(mockLoader.mock.calls[0][0]).toEqual({ field: 123 });
   });
 });
 

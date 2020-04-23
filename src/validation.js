@@ -1,6 +1,7 @@
 export class Schema {
-  constructor(fields) {
-    this.fields = fields !== undefined ? fields : {};
+  constructor(options) {
+    this.fields = options.fields !== undefined ? options.fields : {};
+    this.loaders = options.loaders !== undefined ? options.loaders : [];
   }
   load(object) {
     let out = {};
@@ -10,6 +11,9 @@ export class Schema {
       if (field instanceof Field) {
         out[fieldName] = field.load(object[fieldName]);
       }
+    });
+    this.loaders.forEach(loader => {
+      out = loader(out);
     });
     return out;
   }
@@ -23,8 +27,8 @@ export class Field {
   }
   load(value) {
     value = value !== undefined ? value : this.default;
-    this.loaders.forEach(processor => {
-      value = processor(value);
+    this.loaders.forEach(loader => {
+      value = loader(value);
     });
     return value;
   }
