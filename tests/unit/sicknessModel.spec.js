@@ -31,7 +31,7 @@ describe("Sickness model without hospitalizations", () => {
     model = getModel(
       {
         initialPopulation: 1,
-        initiallyInfectedPeople: 1,
+        initialInfections: 1,
         hospitalizationFraction: 0,
         cohorts: cohortSpecs
       },
@@ -116,7 +116,7 @@ describe("Sickness model with hospitalizations", () => {
     model = getModel(
       {
         initialPopulation: 10,
-        initiallyInfectedPeople: 10,
+        initialInfections: 10,
         hospitalizationFraction: 0.6,
         cohorts: cohortSpec
       },
@@ -138,7 +138,7 @@ describe("Sickness model with hospitalizations", () => {
     model = getModel(
       {
         initialPopulation: 1,
-        initiallyInfectedPeople: 1,
+        initialInfections: 1,
         hospitalizationFraction: 1,
         cohorts: cohortSpec
       },

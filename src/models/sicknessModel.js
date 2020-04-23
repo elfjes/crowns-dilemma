@@ -4,7 +4,7 @@ export default class SicknessModel {
   constructor(parameters) {
     this.initialPopulation = parameters.initialPopulation;
 
-    this.initialInfections = parameters.initiallyInfectedPeople;
+    this.initialInfections = parameters.initialInfections;
     this.initialize(parameters);
   }
 
