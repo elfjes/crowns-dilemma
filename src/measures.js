@@ -1,3 +1,5 @@
+import { assignOptionsOrDefaults } from "@/helpers";
+
 export class Measure {
   constructor(id, options) {
     let defaults = {
@@ -9,7 +11,7 @@ export class Measure {
       displayName: "Unnamed Measure"
     };
     this.id = id;
-    Object.assign(this, defaults, options);
+    assignOptionsOrDefaults(this, options, defaults);
   }
 }
 

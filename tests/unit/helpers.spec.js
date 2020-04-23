@@ -1,4 +1,4 @@
-import { Buckets, Remainder } from "@/helpers";
+import { assignOptionsOrDefaults, Buckets, Remainder } from "@/helpers";
 
 describe("Buckets", () => {
   test("new buckets is filled with 0", () => {
@@ -34,5 +34,24 @@ describe("Remainder", () => {
     let out = remainder.processValue(0.8);
     expect(remainder.remainder).toBeCloseTo(0.1, 8);
     expect(out).toEqual(1);
+  });
+});
+
+describe("assignOptionsOrDefaults", () => {
+  let obj;
+  beforeEach(() => {
+    obj = {};
+  });
+  test("assigns default parameter when not given", () => {
+    assignOptionsOrDefaults(obj, {}, { default: 123 });
+    expect(obj.default).toBe(123);
+  });
+  test("overwrites default parameter when given", () => {
+    assignOptionsOrDefaults(obj, { default: 456 }, { default: 123 });
+    expect(obj.default).toBe(456);
+  });
+  test("ignores extra parameters", () => {
+    assignOptionsOrDefaults(obj, { default: 456 }, {});
+    expect(obj.default).toBeUndefined();
   });
 });
