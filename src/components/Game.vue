@@ -66,7 +66,6 @@ export default {
   },
 
   methods: {
-    correctInitialValues() {},
     getModelParameters() {
       modelParameters.initialPopulation = this.initialValues.initialPopulation;
       modelParameters.initialInfections = this.initialValues.initialInfections;
@@ -84,7 +83,6 @@ export default {
       this.$refs.statistics.update(...states);
     },
     initializeModels() {
-      this.correctInitialValues();
       let modelParameters = this.getModelParameters();
       this.models = [];
       this.modelState = {};
