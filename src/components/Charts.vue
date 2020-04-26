@@ -1,16 +1,6 @@
 <template>
   <div>
-    <div class="buttons has-addons">
-      <button
-        v-for="chart in charts"
-        :key="chart.id"
-        class="button"
-        :class="{ 'is-info': chart.id === activeChart }"
-        @click="activate(chart.id)"
-      >
-        {{ chart.title }}
-      </button>
-    </div>
+    <cd-buttons :buttons="buttons" v-model="activeChart" />
     <component
       v-for="chart in charts"
       v-show="chart.id === activeChart"
@@ -27,11 +17,13 @@
 <script>
 import BarChart from "@/components/BarChart";
 import { chartColors } from "@/chartHelpers";
+import Buttons from "@/components/Buttons";
 
 export default {
   name: "Charts",
   components: {
-    cdBarChart: BarChart
+    cdBarChart: BarChart,
+    cdButtons: Buttons
   },
   data() {
     return {
@@ -113,10 +105,21 @@ export default {
       activeChart: "infectionchart"
     };
   },
-
+  computed: {
+    buttons() {
+      let out = [];
+      this.charts.forEach(chart => {
+        out.push({
+          id: chart.id,
+          name: chart.title
+        });
+      });
+      return out;
+    }
+  },
   methods: {
-    activate(idx) {
-      this.activeChart = idx;
+    activate(chartId) {
+      this.activeChart = chartId;
     },
     update(...states) {
       this.$refs.charts.forEach(chart => {

@@ -10,7 +10,7 @@
             <input
               class="input"
               type="text"
-              v-model="value[field]"
+              v-model="values[field]"
               @blur="validate()"
               :disabled="disabled"
             />
@@ -27,7 +27,7 @@ import { IntField, Schema } from "@/validation";
 export default {
   name: "MultiField",
   props: {
-    value: {
+    defaults: {
       type: Object,
       default() {
         return {};
@@ -57,11 +57,23 @@ export default {
       }
     }
   },
-
+  data() {
+    return {
+      values: {}
+    };
+  },
   methods: {
     validate() {
-      this.value = this.schema.load(this.value);
-      this.$emit("input", this.value);
+      this.values = this.schema.load(this.values);
+      this.$emit("input", this.values);
+    }
+  },
+  created() {
+    this.values = this.defaults;
+  },
+  watch: {
+    defaults(val) {
+      this.values = val;
     }
   }
 };

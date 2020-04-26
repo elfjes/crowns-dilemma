@@ -11,16 +11,12 @@
         <button class="button is-primary" @click="gotoNextDays(7)">
           Next 7 days
         </button>
-        <button class="button is-danger" @click="reset">
+        <button class="button is-danger" @click="$store.commit('stop')">
           Restart simulation
         </button>
       </div>
     </div>
     <div class="column is-4">
-      <cd-card title="Initial Values" start-collapsed>
-        <cd-multi-field v-model="initialValues" :disabled="models !== null" />
-      </cd-card>
-
       <cd-card title="Statistics">
         <cd-statistics ref="statistics" />
       </cd-card>
@@ -35,12 +31,12 @@ import Measures from "@/components/Measures";
 import InfectionModel from "@/models/infectionModel";
 import modelParameters from "@/modelParameters";
 import { measures } from "@/measures";
-import MultiField from "@/components/MultiField";
 import Charts from "@/components/Charts";
 import Statistics from "@/components/Statistics";
 import Card from "@/components/Card";
 import sicknessModel from "@/models/sicknessModel";
 import cohortSpecs from "@/cohortSpecs";
+import { mapState } from "vuex";
 
 const modelTypes = [InfectionModel, sicknessModel];
 export default {
@@ -48,16 +44,14 @@ export default {
   components: {
     cdCharts: Charts,
     cdMeasures: Measures,
-    cdMultiField: MultiField,
     cdStatistics: Statistics,
     cdCard: Card
   },
+  props: {
+    initialValues: Object
+  },
   data() {
     return {
-      initialValues: {
-        initialInfections: modelParameters.initialInfections,
-        initialPopulation: modelParameters.initialPopulation
-      },
       models: null,
       allMeasures: measures,
       activeMeasures: [],
@@ -75,6 +69,7 @@ export default {
     gotoNextDays(nDays = 1) {
       if (this.models === null) {
         this.initializeModels();
+        this.$store.commit("start");
       }
 
       let states = this.updateModels(nDays);
@@ -110,9 +105,20 @@ export default {
     },
     reset() {
       this.models = null;
+      this.$store.commit("stop");
       this.activeMeasures = [];
       this.$refs.charts.reset();
       this.$refs.statistics.reset();
+    }
+  },
+  computed: mapState({
+    running: state => state.running
+  }),
+  watch: {
+    running(running) {
+      if (!running) {
+        this.reset();
+      }
     }
   }
 };
