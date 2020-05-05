@@ -3,7 +3,7 @@
     <section class="section">
       <cd-header :pages="pages" v-model="activePage" />
       <cd-game v-show="activePage === 'game'" :initial-values="initialValues" key="game" />
-      <cd-setup v-show="activePage === 'setup'" :disabled="running" key="setup" />
+      <cd-settings v-show="activePage === 'setup'" :disabled="running" key="setup" />
     </section>
     <cd-footer></cd-footer>
   </div>
@@ -14,7 +14,7 @@ import Header from "@/components/Header";
 import Game from "@/components/Game";
 import Footer from "@/components/Footer";
 import { IntField, Schema } from "@/validation";
-import Setup from "@/components/Setup";
+import Settings from "@/components/Settings";
 import { mapState } from "vuex";
 
 const initialValueSchema = new Schema({
@@ -38,7 +38,7 @@ export default {
     cdHeader: Header,
     cdGame: Game,
     cdFooter: Footer,
-    cdSetup: Setup
+    cdSettings: Settings
   },
   computed: mapState({
     running: state => state.running,

@@ -1,5 +1,5 @@
 <template>
-  <button class="button">
+  <button class="button" @click="$emit('click')">
     <span class="icon">
       <i class="fas" :class="iconClass"></i>
     </span>

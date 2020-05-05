@@ -33,10 +33,10 @@
 </template>
 
 <script>
-  import {mapState} from "vuex";
-  import Button from "@/components/Button";
+import { mapState } from "vuex";
+import Button from "@/components/Button";
 
-  export default {
+export default {
   name: "Header",
   components: {
     cdButton: Button
