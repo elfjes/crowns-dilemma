@@ -1,11 +1,15 @@
-<template
-  ><div>
-    <cd-multi-field :defaults="initialValues" :disabled="disabled" @input="update" />
-    <button class="button is-danger" @click="$store.commit('stop')">
-      Restart simulation
-    </button>
-  </div></template
->
+<template>
+  <div>
+    <div v-if="running" class="notification is-warning is-light">
+      Updating initial values is disabled while a simulation is running. Please restart (
+      <span class="icon has-text-danger"> <i class="fas fa-undo"></i> </span>) the current
+      simulation if you want to update any initial values
+    </div>
+    <div class="container">
+      <cd-multi-field :defaults="initialValues" :disabled="disabled" @input="update" />
+    </div>
+  </div>
+</template>
 
 <script>
 import MultiField from "@/components/MultiField";
@@ -22,7 +26,8 @@ export default {
   },
   computed: {
     ...mapState({
-      initialValues: state => state.initialValues
+      initialValues: state => state.initialValues,
+      running: state => state.running
     })
   },
   methods: {

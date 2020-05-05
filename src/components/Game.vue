@@ -11,9 +11,6 @@
         <button class="button is-primary" @click="gotoNextDays(7)">
           Next 7 days
         </button>
-        <button class="button is-danger" @click="$store.commit('stop')">
-          Restart simulation
-        </button>
       </div>
     </div>
     <div class="column is-4">

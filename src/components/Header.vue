@@ -1,5 +1,5 @@
 <template>
-  <div class="level">
+  <div class="level is-mobile">
     <div class="level-left">
       <div class="level-item">
         <h1 class="title is-4 is-3-mobile">
@@ -9,17 +9,38 @@
     </div>
     <div class="level-right">
       <div class="level-item">
-        <cd-buttons :buttons="pages" :value="activePage" @click="doClick($event)" />
+        <div class="field has-addons">
+          <p class="control">
+            <cd-button
+              :class="{ 'is-info': activePage === 'setup' }"
+              @click="toggleSetup"
+              icon="cog"
+              >Setup
+            </cd-button>
+          </p>
+          <p class="control">
+            <cd-button
+              :class="{ 'is-danger': running, 'has-text-danger': !running }"
+              @click="$store.commit('stop')"
+              icon="undo"
+              >Restart simulation</cd-button
+            >
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Buttons from "@/components/Buttons";
-export default {
+  import {mapState} from "vuex";
+  import Button from "@/components/Button";
+
+  export default {
   name: "Header",
-  components: { cdButtons: Buttons },
+  components: {
+    cdButton: Button
+  },
   props: {
     pages: {
       type: Array
@@ -35,8 +56,16 @@ export default {
     doClick(val) {
       this.activePage = val;
       this.$emit("input", val);
+    },
+    toggleSetup() {
+      this.activePage = this.activePage === "setup" ? "game" : "setup";
+      this.$emit("input", this.activePage);
     }
   },
+  computed: mapState({
+    isMobile: state => state.isMobile,
+    running: state => state.running
+  }),
   created() {
     this.activePage = this.value;
   },
