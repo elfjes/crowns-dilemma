@@ -78,3 +78,7 @@ export function assignOptionsOrDefaults(obj, options, defaults) {
   options = { ...defaults, ...options };
   Object.keys(defaults).forEach(key => (obj[key] = options[key]));
 }
+
+export function isMobile() {
+  return window.innerWidth <= 768;
+}

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="field in Object.keys(value)" class="field is-horizontal" :key="field">
+    <div v-for="field in schema.fieldNames" class="field is-horizontal" :key="field">
       <div class="field-label is-normal">
         <label class="label">{{ field }}</label>
       </div>
@@ -10,8 +10,8 @@
             <input
               class="input"
               type="text"
-              v-model="value[field].value"
-              @blur="validate(value[field])"
+              v-model="values[field]"
+              @blur="validate()"
               :disabled="disabled"
             />
           </p>
@@ -22,22 +22,12 @@
 </template>
 
 <script>
-const converters = {
-  integer(value) {
-    let rv = parseInt(value);
-    if (isFinite(rv)) return rv;
-    return 0;
-  },
-  decimal(value) {
-    let rv = parseFloat(value);
-    if (isFinite(rv)) return rv;
-    return 0;
-  }
-};
+import { IntField, Schema } from "@/validation";
+
 export default {
   name: "MultiField",
   props: {
-    value: {
+    defaults: {
       type: Object,
       default() {
         return {};
@@ -46,19 +36,44 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    schema: {
+      type: Schema,
+      default() {
+        return new Schema({
+          fields: {
+            initialInfections: new IntField({ minVal: 0, default: 0 }),
+            initialPopulation: new IntField({ minVal: 0, default: 0 })
+          },
+          loaders: [
+            obj => {
+              if (obj.initialInfections > obj.initialPopulation) {
+                obj.initialInfections = obj.initialPopulation;
+              }
+              return obj;
+            }
+          ]
+        });
+      }
     }
   },
+  data() {
+    return {
+      values: {}
+    };
+  },
   methods: {
-    validate(field) {
-      if (converters[field.type] !== undefined) {
-        field.value = converters[field.type](field.value);
-      }
-      if (field.minVal !== undefined && field.value < field.minVal) {
-        field.value = field.minVal;
-      }
-      if (field.maxVal !== undefined && field.value > field.maxVal) {
-        field.value = field.maxVal;
-      }
+    validate() {
+      this.values = this.schema.load(this.values);
+      this.$emit("input", this.values);
+    }
+  },
+  created() {
+    this.values = this.defaults;
+  },
+  watch: {
+    defaults(val) {
+      this.values = val;
     }
   }
 };

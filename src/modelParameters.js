@@ -1,6 +1,6 @@
 export default {
   initialPopulation: 10000,
-  initiallyInfectedPeople: 2,
+  initialInfections: 2,
   baseInteractionParameter: 10,
   baseInfectionChanceParameter: 0.088,
   hospitalizationFraction: 0.1,

@@ -6,14 +6,24 @@ export class Schema {
   load(object) {
     let out = {};
     let field;
+    this.fieldNames.forEach(fieldName => {
+      field = this.fields[fieldName];
+      out[fieldName] = field.load(object[fieldName]);
+    });
+
+    this.loaders.forEach(loader => {
+      out = loader(out);
+    });
+    return out;
+  }
+  get fieldNames() {
+    let out = [];
+    let field;
     Object.keys(this.fields).forEach(fieldName => {
       field = this.fields[fieldName];
       if (field instanceof Field) {
-        out[fieldName] = field.load(object[fieldName]);
+        out.push(fieldName);
       }
-    });
-    this.loaders.forEach(loader => {
-      out = loader(out);
     });
     return out;
   }
