@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-for="prop in properties">
-      <div class="columns is-desktop" :key="prop.ref">
+      <div class="columns is-mobile" :key="prop.ref">
         <div class="column">
           <p class="has-text-weight-bold">{{ prop.displayName }}:</p>
         </div>

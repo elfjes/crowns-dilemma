@@ -1,16 +1,15 @@
 <template>
   <div>
-    <cd-buttons :buttons="buttons" v-model="activeChart" />
-    <component
-      v-for="chart in charts"
-      v-show="chart.id === activeChart"
-      :is="chart.component"
-      :key="chart.id"
-      ref="charts"
-      :id="chart.id"
-      :title="chart.title"
-      :config="chart.config"
-    />
+    <b-tabs v-model="activeTab">
+      <template v-for="chart in charts">
+        <b-tab-item :key="chart.id" :label="chart.title">
+          <component :is="chart.component" ref="charts" :id="chart.id" :config="chart.config" />
+        </b-tab-item>
+      </template>
+      <b-tab-item v-if="isMobile" key="statistics" label="Statistics">
+        <cd-statistics ref="statistics"></cd-statistics>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
@@ -18,12 +17,15 @@
 import BarChart from "@/components/BarChart";
 import { chartColors } from "@/chartHelpers";
 import Buttons from "@/components/Buttons";
+import Statistics from "@/components/Statistics";
+import { mapState } from "vuex";
 
 export default {
   name: "Charts",
   components: {
     cdBarChart: BarChart,
-    cdButtons: Buttons
+    cdButtons: Buttons,
+    cdStatistics: Statistics
   },
   data() {
     return {
@@ -102,10 +104,13 @@ export default {
           }
         }
       ],
-      activeChart: "infectionchart"
+      activeTab: 0
     };
   },
   computed: {
+    ...mapState({
+      isMobile: state => state.isMobile
+    }),
     buttons() {
       let out = [];
       this.charts.forEach(chart => {
@@ -118,16 +123,18 @@ export default {
     }
   },
   methods: {
-    activate(chartId) {
-      this.activeChart = chartId;
+    views() {
+      return this.$refs.statistics
+        ? [...this.$refs.charts, this.$refs.statistics]
+        : this.$refs.charts;
     },
     update(...states) {
-      this.$refs.charts.forEach(chart => {
+      this.views().forEach(chart => {
         chart.update(...states);
       });
     },
     reset() {
-      this.$refs.charts.forEach(chart => {
+      this.views().forEach(chart => {
         chart.reset();
       });
     }
