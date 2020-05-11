@@ -12,9 +12,6 @@ export default {
     id: {
       type: String
     },
-    title: {
-      type: String
-    },
     config: {
       type: Object
     }

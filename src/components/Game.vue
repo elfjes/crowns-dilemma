@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="column is-4">
-      <cd-card title="Statistics">
+      <cd-card v-if="!isMobile" title="Statistics">
         <cd-statistics ref="statistics" />
       </cd-card>
 
@@ -55,7 +55,10 @@ export default {
       modelState: {}
     };
   },
-
+  computed: mapState({
+    running: state => state.running,
+    isMobile: state => state.isMobile
+  }),
   methods: {
     getModelParameters() {
       modelParameters.initialPopulation = this.initialValues.initialPopulation;
@@ -71,8 +74,9 @@ export default {
 
       let states = this.updateModels(nDays);
 
-      this.$refs.charts.update(...states);
-      this.$refs.statistics.update(...states);
+      this.views().forEach(view => {
+        view.update(...states);
+      });
     },
     initializeModels() {
       let modelParameters = this.getModelParameters();
@@ -104,13 +108,15 @@ export default {
       this.models = null;
       this.$store.commit("stop");
       this.activeMeasures = [];
-      this.$refs.charts.reset();
-      this.$refs.statistics.reset();
+      this.views().forEach(view => {
+        view.reset();
+      });
+    },
+    views() {
+      return this.isMobile ? [this.$refs.charts] : [this.$refs.charts, this.$refs.statistics];
     }
   },
-  computed: mapState({
-    running: state => state.running
-  }),
+
   watch: {
     running(running) {
       if (!running) {
