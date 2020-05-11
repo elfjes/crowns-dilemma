@@ -21,12 +21,12 @@ export default class InfectionModel {
       R0,
       uninfectedPeople,
       population,
-      this.getWeightedContagiousPeople(data.cohorts || {})
+      InfectionModel.getWeightedContagiousPeople(data.cohorts || {})
     );
 
     return this.getState();
   }
-  getWeightedContagiousPeople(cohorts) {
+  static getWeightedContagiousPeople(cohorts) {
     return Object.values(cohorts).reduce((cur, cohort) => {
       return cur + cohort.weightedContagiousPeople;
     }, 0);
